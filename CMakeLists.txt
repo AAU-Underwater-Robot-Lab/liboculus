@@ -15,6 +15,7 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 find_package( Boost REQUIRED COMPONENTS system )
+find_package(g3log REQUIRED)
 
 # Actually not using full SDK, just the header files
 # in thirdparty/Oculus
@@ -46,63 +47,61 @@ if (FIPS_CONFIG)
   fips_finish()
 
 else()
-  # == ROS / Catkin-specific section =================================
-  project(liboculus)
+  # == ament/ROS2 section =================================
+  if(NOT FIPS_CONFIG)
+    find_package(ament_cmake REQUIRED)
+    find_package(Boost REQUIRED COMPONENTS system)
+    find_package(g3log_ros REQUIRED)
 
-  find_package(catkin REQUIRED
-          #cmake_modules
-          g3log_ros )
+    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    add_compile_options(-std=c++17)
 
-  catkin_package(
-            CATKIN_DEPENDS g3log_ros
-            INCLUDE_DIRS include thirdparty
-            LIBRARIES liboculus_LIB )
+    include_directories(
+      include
+      thirdparty
+      ${CMAKE_INSTALL_PREFIX}/include/g3log
+    )
 
-  add_compile_options(-std=c++14)
+    set(oculus_SRCS
+      lib/DataRx.cpp
+      lib/SonarConfiguration.cpp
+      lib/SonarStatus.cpp
+      lib/StatusRx.cpp
+      lib/SonarPlayer.cpp
+      lib/OculusMessageHandler.cpp
+      lib/SimpleFireMessage.cpp
+      lib/IoServiceThread.cpp
+    )
 
-  include_directories(
-              include
-              thirdparty
-              ${catkin_INCLUDE_DIRS} )
+    add_library(oculus SHARED ${oculus_SRCS})
+    target_link_libraries(oculus
+      Boost::system
+      g3log_ros::g3log_ros
+      g3log
+    )
+    ament_target_dependencies(oculus Boost g3log_ros)
 
-  set(oculus_SRCS
-              lib/DataRx.cpp
-              lib/SonarConfiguration.cpp
-              lib/SonarStatus.cpp
-              lib/StatusRx.cpp
-              lib/SonarPlayer.cpp
-              lib/OculusMessageHandler.cpp
-              lib/SimpleFireMessage.cpp
-              lib/IoServiceThread.cpp )
+    install(
+      TARGETS oculus
+      EXPORT oculus
+      ARCHIVE DESTINATION lib
+      LIBRARY DESTINATION lib
+      RUNTIME DESTINATION bin
+    )
 
+    install(
+      DIRECTORY include/${PROJECT_NAME}/ thirdparty/
+      DESTINATION include
+      FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
+      PATTERN ".git" EXCLUDE
+    )
 
-  add_library(liboculus_LIB ${oculus_SRCS})
-  target_link_libraries(liboculus_LIB ${catkin_LIBRARIES})
+    ament_export_targets(oculus HAS_LIBRARY_TARGET)
+    ament_export_include_directories(include)
+    ament_export_libraries(oculus)
 
-  install(TARGETS liboculus_LIB
-              ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-              LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-              RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
-
-  ## Install headers
-  install(DIRECTORY  include/${PROJECT_NAME}/ thirdparty/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
-              PATTERN ".git" EXCLUDE)
-
-  if (CATKIN_ENABLE_TESTING)
-    add_definitions(-DTEST_DATA_PATH="${CMAKE_CURRENT_SOURCE_DIR}/test/data")
-    include_directories( test/data/ )
-
-    file(GLOB oculus_test_SRCS
-              test/unit/*cpp )
-
-    catkin_add_gtest(oculus_test ${oculus_test_SRCS})
-
-    target_link_libraries(oculus_test ${catkin_LIBRARIES}
-              liboculus_LIB
-              Boost::system )
+    ament_package()
+    return()
   endif()
-
-
 endif()
