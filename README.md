@@ -30,9 +30,9 @@ This is a hybrid repository:
 * Historically, the repo has also supported the [fips](http://floooh.github.io/fips/) C++ dependency management tool. To build with fips: `./fips build`
 
 The primary dependency is on [g3log](https://github.com/KjellKod/g3log).
-* If using ROS1 or ROS2, there are two options:
+* If using either ROS1 or ROS2, there are two options:
   * clone [g3log_ros](https://gitlab.com/apl-ocean-engineering/g3log_ros) into your workspace's `src/` directory
-  * use the provided `liboculus.rosinstall` file: `cd <catkin_ws>/src`; `vcs import --input liboculus/liboculus.repos`
+  * use the provided `liboculus.rosinstall` file: `cd <catkin_ws>/src`; `vcs import --input liboculus/liboculus.repos`.   The `main` branch of `g3log_ros` is also a ROS1-ROS2 hybrid.
 * It will be handled automagically if using fips.
 
 The (optional) test suite also requires Googletest and the (also optional)
