@@ -108,7 +108,7 @@ class DataRx : public OculusMessageHandler {
 
 };  // class DataRx
 
-template <typename FireMsg_t = OculusSimpleFireMessage2>
+template <typename FireMsg_t>
 void DataRx::sendSimpleFireMessage(const SonarConfiguration &config) {
   if (!isConnected()) {
     LOG(WARNING) << "Can't send to sonar, not connected";
