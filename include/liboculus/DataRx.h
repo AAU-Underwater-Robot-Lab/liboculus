@@ -45,7 +45,7 @@ namespace liboculus {
 using std::shared_ptr;
 
 class DataRx : public OculusMessageHandler {
- public:
+public:
   explicit DataRx(const IoServiceThread::IoContextPtr &iosrv);
   ~DataRx();
 
@@ -72,7 +72,7 @@ class DataRx : public OculusMessageHandler {
   virtual void haveWritten(const ByteVector &bytes) { ; }
   virtual void haveRead(const ByteVector &bytes) { ; }
 
- private:
+private:
   void onConnect(const boost::system::error_code &error);
 
   // Initiates a network read.
@@ -106,7 +106,7 @@ class DataRx : public OculusMessageHandler {
 
   OnConnectCallback _onConnectCallback;
 
-};  // class DataRx
+}; // class DataRx
 
 template <typename FireMsg_t>
 void DataRx::sendSimpleFireMessage(const SonarConfiguration &config) {
@@ -128,4 +128,4 @@ void DataRx::sendSimpleFireMessage(const SonarConfiguration &config) {
   }
 }
 
-}  // namespace liboculus
+} // namespace liboculus

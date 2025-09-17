@@ -33,7 +33,7 @@
 #pragma once
 
 #include <cmath>
-#include <cstddef>  // for size_t
+#include <cstddef> // for size_t
 #include <string>
 #include <vector>
 
@@ -62,7 +62,7 @@ const float AzimuthBeamwidthDeg = 1.0;
 const float AzimuthBeamwidthRad = DEG2RAD(AzimuthBeamwidthDeg);
 
 const float MaxRange = 120;
-};  // namespace Freq_750kHz
+}; // namespace Freq_750kHz
 
 namespace Freq_1200kHz {
 const float ElevationBeamwidthDeg = 12.0;
@@ -72,8 +72,8 @@ const float AzimuthBeamwidthDeg = 0.6;
 const float AzimuthBeamwidthRad = DEG2RAD(AzimuthBeamwidthDeg);
 
 const float MaxRange = 40;
-};  // namespace Freq_1200kHz
-};  // namespace Oculus_M750d
+}; // namespace Freq_1200kHz
+}; // namespace Oculus_M750d
 
 namespace Oculus_M1200d {
 namespace Freq_1200kHz {
@@ -84,7 +84,7 @@ const float AzimuthBeamwidthDeg = 0.6;
 const float AzimuthBeamwidthRad = DEG2RAD(AzimuthBeamwidthDeg);
 
 const float MaxRange = 40;
-};  // namespace Freq_1200kHz
+}; // namespace Freq_1200kHz
 
 namespace Freq_2100kHz {
 const float ElevationBeamwidthDeg = 12.0;
@@ -94,8 +94,8 @@ const float AzimuthBeamwidthDeg = 0.4;
 const float AzimuthBeamwidthRad = DEG2RAD(AzimuthBeamwidthDeg);
 
 const float MaxRange = 10;
-};  // namespace Freq_2100kHz
-};  // namespace Oculus_M1200d
+}; // namespace Freq_2100kHz
+}; // namespace Oculus_M1200d
 
 namespace Oculus_M3000d {
 namespace Freq_1200kHz {
@@ -106,7 +106,7 @@ const float AzimuthBeamwidthDeg = 0.6;
 const float AzimuthBeamwidthRad = DEG2RAD(AzimuthBeamwidthDeg);
 
 const float MaxRange = 30;
-};  // namespace Freq_1200kHz
+}; // namespace Freq_1200kHz
 
 namespace Freq_3000kHz {
 const float ElevationBeamwidthDeg = 20.0;
@@ -116,8 +116,8 @@ const float AzimuthBeamwidthDeg = 0.4;
 const float AzimuthBeamwidthRad = DEG2RAD(AzimuthBeamwidthDeg);
 
 const float MaxRange = 5;
-};  // namespace Freq_3000kHz
-};  // namespace Oculus_M3000d
+}; // namespace Freq_3000kHz
+}; // namespace Oculus_M3000d
 
 //===================================================================
 //
@@ -153,4 +153,4 @@ struct FlagBits {
 // liboculus/thirdparty/Oculus/Oculus.h.
 typedef enum { OCULUS_LOW_FREQ = 1, OCULUS_HIGH_FREQ = 2 } OculusFreqMode;
 
-}  // namespace liboculus
+} // namespace liboculus

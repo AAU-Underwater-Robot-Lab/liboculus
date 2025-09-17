@@ -47,13 +47,15 @@ IoServiceThread::IoServiceThread()
 IoServiceThread::~IoServiceThread() {}
 
 void IoServiceThread::start() {
-  if (_thread) return;  // running
+  if (_thread)
+    return; // running
   _thread.reset(
       new std::thread(boost::bind(&IoServiceThread::threadExec, this)));
 }
 
 void IoServiceThread::stop() {
-  if (!_thread) return;
+  if (!_thread)
+    return;
 #if BOOST_VERSION >= 106600
   _work_guard.reset();
 #endif
@@ -61,7 +63,8 @@ void IoServiceThread::stop() {
 }
 
 void IoServiceThread::join() {
-  if (!_thread) return;
+  if (!_thread)
+    return;
   _thread->join();
   _context->reset();
   _thread.reset();
@@ -69,4 +72,4 @@ void IoServiceThread::join() {
 
 void IoServiceThread::threadExec() { _context->run(); }
 
-}  // namespace liboculus
+} // namespace liboculus

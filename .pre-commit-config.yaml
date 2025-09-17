@@ -1,41 +1,43 @@
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.2.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.3
     hooks:
-    -   id: check-added-large-files
-    -   id: check-json
-    -   id: check-merge-conflict
-    -   id: check-xml
-    -   id: check-yaml
-    -   id: end-of-file-fixer
-    -   id: mixed-line-ending
-    -   id: trailing-whitespace
+      # Run the linter
+      - id: ruff-check
+        args: ["--fix", "--exit-non-zero-on-fix"]
+      # Run the formatter.
+      - id: ruff-format
 
--   repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v15.0.4
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v20.1.7
     hooks:
     -   id: clang-format
-        # Respect .clang-format if it exists, otherwise use Google
-        args: ["--fallback-style=Google"]
+        types_or: [c++, c]
 
-# -   repo: https://gitlab.com/daverona/pre-commit/cpp
-#     rev: 0.8.0
-#     hooks:
-#     -   id: cpplint
-#         args: ["--filter=-build/include_order,-readability/todo"]
+  # CMake formatter
+  - repo: https://github.com/BlankSpruce/gersemi
+    rev: 0.19.3
+    hooks:
+    - id: gersemi
 
--   repo: https://github.com/psf/black
-    rev: 22.12.0
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
     hooks:
-    -   id: black
-        # For now, no configuration. May want "--line-length 80"
--   repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
-    hooks:
-    -   id: flake8
-        # pep8-naming catches camel_case violations
-        additional_dependencies: [pep8-naming, flake8-bugbear, flake8-comprehensions]
-        # formatting handles line-length, no reason for linter to also flag.
-        args: [--ignore, E501]
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-shebang-scripts-are-executable
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-xml
+      - id: check-yaml
+      - id: debug-statements
+      - id: destroyed-symlinks
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]

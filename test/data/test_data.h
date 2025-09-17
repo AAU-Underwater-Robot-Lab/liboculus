@@ -27,7 +27,8 @@ using std::vector;
 inline std::shared_ptr<ByteVector> Load(const std::string &filename) {
   std::ifstream inf(filename);
 
-  if (!inf.is_open()) return std::make_shared<ByteVector>();
+  if (!inf.is_open())
+    return std::make_shared<ByteVector>();
 
   // This feels a little ... wrong
   inf.seekg(0, std::ios::end);
@@ -41,4 +42,4 @@ inline std::shared_ptr<ByteVector> Load(const std::string &filename) {
   return std::make_shared<ByteVector>(out.begin(), out.end());
 }
 
-}  // namespace Oculus_TestData
+} // namespace Oculus_TestData

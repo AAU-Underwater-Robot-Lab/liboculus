@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include <g3log/g3log.hpp>  // needed for CHECK macro
+#include <g3log/g3log.hpp> // needed for CHECK macro
 
 #include "Oculus/Oculus.h"
 #include "liboculus/DataTypes.h"
@@ -38,7 +38,7 @@
 namespace liboculus {
 
 class BearingData {
- public:
+public:
   BearingData() : _data(nullptr), _numBeams(0) { ; }
 
   BearingData(const BearingData &other) = default;
@@ -64,9 +64,9 @@ class BearingData {
 
   float back() const { return _data[_numBeams - 1] / 100.0; }
 
- private:
+private:
   const int16_t *_data;
   uint16_t _numBeams;
 };
 
-}  // namespace liboculus
+} // namespace liboculus

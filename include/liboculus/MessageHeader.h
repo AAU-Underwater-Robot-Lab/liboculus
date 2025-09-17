@@ -51,7 +51,7 @@ using std::vector;
 //  by the buffer.    Other packet types can inherit from this class
 //  to represent large structs which start with a MessageHeader
 class MessageHeader {
- public:
+public:
   MessageHeader() = default;
   MessageHeader(const MessageHeader &) = default;
 
@@ -76,7 +76,7 @@ class MessageHeader {
   }
 
   virtual bool valid() const {
-    return hdr()->oculusId == OCULUS_CHECK_ID;  // 0x4f53
+    return hdr()->oculusId == OCULUS_CHECK_ID; // 0x4f53
   }
 
   virtual void dump() const {
@@ -95,8 +95,8 @@ class MessageHeader {
 
   const std::shared_ptr<ByteVector> &buffer(void) const { return _buffer; }
 
- protected:
+protected:
   std::shared_ptr<ByteVector> _buffer;
-};  // class MessageHeader
+}; // class MessageHeader
 
-}  // namespace liboculus
+} // namespace liboculus

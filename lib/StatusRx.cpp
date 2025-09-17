@@ -49,10 +49,7 @@ using std::string;
 // StatusRx - a listening socket for oculus status messages
 
 StatusRx::StatusRx(const IoServiceThread::IoContextPtr &iosrv)
-    : _num_valid_rx(0),
-      _num_invalid_rx(0),
-      _socket(*iosrv),
-      _deadline(*iosrv),
+    : _num_valid_rx(0), _num_invalid_rx(0), _socket(*iosrv), _deadline(*iosrv),
       _sonarStatusCallback([](const SonarStatus &, bool) {}) {
   doConnect();
 }
@@ -185,4 +182,4 @@ bool StatusRx::parseStatus(const SonarStatus &status) {
   return true;
 }
 
-}  // namespace liboculus
+} // namespace liboculus
