@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ros_distro: ["noetic", "jazzy", "rolling"]
+        ros_distro: ["noetic", "kilted", "rolling"]
 
     steps:
       - name: Checkout repository
