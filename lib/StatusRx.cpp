@@ -76,7 +76,9 @@ void StatusRx::scheduleRead() {
   _buffer.resize(sizeof(OculusStatusMsg));
   LOG(DEBUG) << "Waiting for status packet...";
   _socket.async_receive(boost::asio::buffer(_buffer),
-                        std::bind(&StatusRx::handleRead, this, std::placeholders::_1,std::placeholders::_2));
+                        std::bind(&StatusRx::handleRead, this,
+                                  std::placeholders::_1,
+                                  std::placeholders::_2));
 }
 
 void StatusRx::handleRead(const boost::system::error_code &ec,

@@ -47,8 +47,7 @@ IoServiceThread::~IoServiceThread() {}
 void IoServiceThread::start() {
   if (_thread)
     return; // running
-  _thread.reset(
-      new std::thread(std::bind(&IoServiceThread::threadExec, this)));
+  _thread.reset(new std::thread(std::bind(&IoServiceThread::threadExec, this)));
 }
 
 void IoServiceThread::stop() {

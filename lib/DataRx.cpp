@@ -51,8 +51,8 @@ void DataRx::connect(const asio::ip::address &addr) {
   boost::asio::ip::tcp::endpoint sonarEndpoint(addr, port);
   LOG(INFO) << "Connecting to sonar at " << sonarEndpoint;
 
-  _socket.async_connect(sonarEndpoint,
-                        std::bind(&DataRx::onConnect, this, std::placeholders::_1));
+  _socket.async_connect(sonarEndpoint, std::bind(&DataRx::onConnect, this,
+                                                 std::placeholders::_1));
 }
 
 void DataRx::connect(const std::string &strAddr) {
@@ -101,7 +101,8 @@ void DataRx::restartReceiveCycle() {
     _buffer->clear();
   }
   readUpTo(sizeof(uint8_t),
-           std::bind(&DataRx::rxFirstByteOculusId, this, std::placeholders::_1, std::placeholders::_2));
+           std::bind(&DataRx::rxFirstByteOculusId, this, std::placeholders::_1,
+                     std::placeholders::_2));
 }
 
 //==== States in the state machine... ====
@@ -119,7 +120,8 @@ void DataRx::rxFirstByteOculusId(const boost::system::error_code &ec,
 
   if (_buffer->data()[0] == liboculus::PacketHeaderLSB) {
     readUpTo(sizeof(uint16_t),
-             std::bind(&DataRx::rxSecondByteOculusId, this, std::placeholders::_1, std::placeholders::_2));
+             std::bind(&DataRx::rxSecondByteOculusId, this,
+                       std::placeholders::_1, std::placeholders::_2));
     return;
   }
 
@@ -142,7 +144,8 @@ void DataRx::rxSecondByteOculusId(const boost::system::error_code &ec,
     LOG(DEBUG) << "Received good OculusId at start of packet";
 
     readUpTo(sizeof(OculusMessageHeader),
-             std::bind(&DataRx::rxHeader, this, std::placeholders::_1,std::placeholders:: _2));
+             std::bind(&DataRx::rxHeader, this, std::placeholders::_1,
+                       std::placeholders::_2));
     return;
   }
 
@@ -177,7 +180,8 @@ void DataRx::rxHeader(const boost::system::error_code &ec,
   // hdr.dump();
 
   const auto packetSize = hdr.packetSize();
-  readUpTo(packetSize, std::bind(&DataRx::rxPacket, this, std::placeholders::_1, std::placeholders::_2));
+  readUpTo(packetSize, std::bind(&DataRx::rxPacket, this, std::placeholders::_1,
+                                 std::placeholders::_2));
 }
 
 void DataRx::rxPacket(const boost::system::error_code &ec,

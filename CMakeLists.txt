@@ -32,7 +32,8 @@ if(${ROS_VERSION} EQUAL 2)
 
     add_library(oculus SHARED ${oculus_SRCS})
 
-    target_include_directories( oculus
+    target_include_directories(
+        oculus
         PUBLIC
             "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
             "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/thirdparty>"
@@ -40,9 +41,7 @@ if(${ROS_VERSION} EQUAL 2)
             "$<INSTALL_INTERFACE:include/thirdparty>"
     )
 
-
-    target_link_libraries(oculus 
-            PUBLIC Boost::system g3log_ros::g3log_ros)
+    target_link_libraries(oculus PUBLIC Boost::system g3log_ros::g3log_ros)
 
     install(
         TARGETS oculus
@@ -65,7 +64,6 @@ if(${ROS_VERSION} EQUAL 2)
     ament_export_libraries(oculus)
 
     ament_package()
-
 elseif(${ROS_VERSION} EQUAL 1)
     # Catkin/ROS1 section =====
     find_package(catkin REQUIRED COMPONENTS g3log_ros)
