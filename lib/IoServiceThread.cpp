@@ -30,8 +30,6 @@
 
 #include "liboculus/IoServiceThread.h"
 
-#include <boost/bind.hpp>
-
 namespace liboculus {
 
 IoServiceThread::IoServiceThread()
@@ -50,7 +48,7 @@ void IoServiceThread::start() {
   if (_thread)
     return; // running
   _thread.reset(
-      new std::thread(boost::bind(&IoServiceThread::threadExec, this)));
+      new std::thread(std::bind(&IoServiceThread::threadExec, this)));
 }
 
 void IoServiceThread::stop() {

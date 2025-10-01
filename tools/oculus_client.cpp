@@ -9,7 +9,6 @@ using std::string;
 
 #include <CLI/CLI.hpp>
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 
 #include "liboculus/DataRx.h"
 #include "liboculus/IoServiceThread.h"

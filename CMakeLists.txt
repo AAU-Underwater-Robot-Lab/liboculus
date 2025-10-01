@@ -30,10 +30,19 @@ if(${ROS_VERSION} EQUAL 2)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     add_compile_options(-std=c++17)
 
-    include_directories(include thirdparty)
-
     add_library(oculus SHARED ${oculus_SRCS})
-    target_link_libraries(oculus PUBLIC Boost::system g3log_ros::g3log_ros)
+
+    target_include_directories( oculus
+        PUBLIC
+            "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+            "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/thirdparty>"
+            "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"
+            "$<INSTALL_INTERFACE:include/thirdparty>"
+    )
+
+
+    target_link_libraries(oculus 
+            PUBLIC Boost::system g3log_ros::g3log_ros)
 
     install(
         TARGETS oculus
@@ -44,7 +53,7 @@ if(${ROS_VERSION} EQUAL 2)
     )
 
     install(
-        DIRECTORY include/${PROJECT_NAME}/ thirdparty/
+        DIRECTORY include/${PROJECT_NAME} thirdparty
         DESTINATION include
         FILES_MATCHING
         PATTERN "*.hpp"
@@ -53,10 +62,10 @@ if(${ROS_VERSION} EQUAL 2)
     )
 
     ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
-    ament_export_include_directories(include)
     ament_export_libraries(oculus)
 
     ament_package()
+
 elseif(${ROS_VERSION} EQUAL 1)
     # Catkin/ROS1 section =====
     find_package(catkin REQUIRED COMPONENTS g3log_ros)

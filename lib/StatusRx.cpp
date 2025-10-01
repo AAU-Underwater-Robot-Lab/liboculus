@@ -33,7 +33,6 @@
 #include <arpa/inet.h>
 #include <string.h>
 
-#include <boost/bind.hpp>
 #include <iomanip>
 #include <sstream>
 
@@ -77,7 +76,7 @@ void StatusRx::scheduleRead() {
   _buffer.resize(sizeof(OculusStatusMsg));
   LOG(DEBUG) << "Waiting for status packet...";
   _socket.async_receive(boost::asio::buffer(_buffer),
-                        boost::bind(&StatusRx::handleRead, this, _1, _2));
+                        std::bind(&StatusRx::handleRead, this, std::placeholders::_1,std::placeholders::_2));
 }
 
 void StatusRx::handleRead(const boost::system::error_code &ec,
