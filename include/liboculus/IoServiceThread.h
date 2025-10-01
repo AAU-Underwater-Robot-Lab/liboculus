@@ -31,7 +31,6 @@
 #pragma once
 
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <memory>
 #include <thread>
 
@@ -41,7 +40,7 @@ namespace liboculus {
 
 // Generic "worker thread" for boost::asio
 class IoServiceThread {
- public:
+public:
 #if BOOST_VERSION >= 106600
   typedef boost::asio::io_context IoContext;
 #else
@@ -60,7 +59,7 @@ class IoServiceThread {
 
   const IoContextPtr &context() { return _context; }
 
- private:
+private:
   IoContextPtr _context;
 
 #if BOOST_VERSION >= 106600
@@ -76,4 +75,4 @@ class IoServiceThread {
   void threadExec();
 };
 
-}  // namespace liboculus
+} // namespace liboculus

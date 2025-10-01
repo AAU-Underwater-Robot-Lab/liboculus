@@ -40,19 +40,15 @@
 namespace liboculus {
 
 SonarConfiguration::SonarConfiguration()
-    : _sendRangeAsMeters(true),
-      _rangeInMeters(5),
-      _sendGain(true),
-      _simpleReturn(true),
-      _gainAssistance(true),
-      _512beams(true),
+    : _sendRangeAsMeters(true), _rangeInMeters(5), _sendGain(true),
+      _simpleReturn(true), _gainAssistance(true), _512beams(true),
       _dataSize(dataSize8Bit) {
   memset(&_sfm, 0, sizeof(ConfigFireMessage));
 
   // Fill in OculusMessageHeader _sfm.head
-  _sfm.head.oculusId = OCULUS_CHECK_ID;  // 0x4f53
+  _sfm.head.oculusId = OCULUS_CHECK_ID; // 0x4f53
   _sfm.head.srcDeviceId = 0;
-  _sfm.head.dstDeviceId = 0;  // n.b. ignored by device
+  _sfm.head.dstDeviceId = 0; // n.b. ignored by device
   _sfm.head.msgId = messageSimpleFire;
   _sfm.head.msgVersion = 2;
   _sfm.head.payloadSize =
@@ -60,15 +56,15 @@ SonarConfiguration::SonarConfiguration()
 
   _sfm.masterMode = OCULUS_HIGH_FREQ;
   _sfm.pingRate = pingRateNormal;
-  _sfm.networkSpeed = 0xff;  // uint8_t; can reduce network speed for bad links
-  _sfm.gammaCorrection = 127;  // uint8_t; for 127, gamma = 0.5
+  _sfm.networkSpeed = 0xff;   // uint8_t; can reduce network speed for bad links
+  _sfm.gammaCorrection = 127; // uint8_t; for 127, gamma = 0.5
 
-  updateFlags();  // Set to defaults
+  updateFlags(); // Set to defaults
 
-  _sfm.rangePercent = 2;  // 2 m; can be percent or meters, flag controlled
+  _sfm.rangePercent = 2; // 2 m; can be percent or meters, flag controlled
   _sfm.gainPercent = 50;
-  _sfm.speedOfSound = 0.0;  // m/s  0 to calculate SoS from salinity
-  _sfm.salinity = 0.0;      // ppt; 0 for freshwater, 35 for seawater
+  _sfm.speedOfSound = 0.0; // m/s  0 to calculate SoS from salinity
+  _sfm.salinity = 0.0;     // ppt; 0 for freshwater, 35 for seawater
 }
 
 SonarConfiguration &SonarConfiguration::setRange(double input) {
@@ -143,8 +139,8 @@ SonarConfiguration &SonarConfiguration::set512Beams(bool v) {
 //== Serialization functions
 
 template <>
-std::vector<uint8_t> SonarConfiguration::serialize<OculusSimpleFireMessage2>()
-    const {
+std::vector<uint8_t>
+SonarConfiguration::serialize<OculusSimpleFireMessage2>() const {
   updateFlags();
 
   // Corner case.  If in 32bit mode, range is always a percentage of max range
@@ -168,8 +164,8 @@ std::vector<uint8_t> SonarConfiguration::serialize<OculusSimpleFireMessage2>()
 }
 
 template <>
-std::vector<uint8_t> SonarConfiguration::serialize<OculusSimpleFireMessage>()
-    const {
+std::vector<uint8_t>
+SonarConfiguration::serialize<OculusSimpleFireMessage>() const {
   updateFlags();
 
   // As of right now, since OculusSimpleFireMessage and OculusSimpleFireMessage2
@@ -223,4 +219,4 @@ void SonarConfiguration::dump() const {
             << "\n       use 512 beams   " << get512Beams();
 }
 
-}  // namespace liboculus
+} // namespace liboculus

@@ -13,7 +13,7 @@ This library contains code for:
   - Decoding and parsing fields from the resulting ping messages from the sonar.
   - Loading and parsing sonar data recorded as either:
     - Raw streams of binary packets.
-    - **Note:** This repo includes scaffold code for reading `.oculus` files saved from the Blueprint GUI, but that format is proprietary and undocumented **we cannot parse `.oculus` files.**
+    - **Note:** This repo includes scaffold code for reading `.oculus` files saved from the Blueprint GUI, but that format is proprietary and undocumented. **We cannot parse `.oculus` files!!**
 
 The library contains no special provisions for *saving* sonar data,
 but it's straightforward to write packets as a raw binary stream
@@ -25,19 +25,17 @@ but it's straightforward to write packets as a raw binary stream
 
 This is a hybrid repository:
 
-* We primarily build using catkin, though there are no ROS dependencies in the code. We hope the code is still useful for others looking to talk to the Oculus.
+* We primarily build in ROS1 or ROS2, though there are no ROS dependencies in the code. We hope the code is still useful for others looking to talk to the Oculus.   It is implemented as a hybrid package which should build successfully in either a ROS1 "catkin" or ROS2 "colcon" workspace.
 
-* Historically, the repo has also supported the [fips](http://floooh.github.io/fips/) C++ dependency management tool. To build with fips: `./fips build`
+* [fips](http://floooh.github.io/fips/) support has been removed from this branch.
 
 The primary dependency is on [g3log](https://github.com/KjellKod/g3log).
-* If using catkin, there are two options:
+* If using either ROS1 or ROS2, there are two options:
   * clone [g3log_ros](https://gitlab.com/apl-ocean-engineering/g3log_ros) into your workspace's `src/` directory
-  * use the provided `liboculus.rosinstall` file: `cd <catkin_ws>/src`; `vcs import --input liboculus/liboculus.repos`
-* It will be handled automagically if using fips.
+  * use the provided `liboculus.rosinstall` file: `cd <catkin_ws>/src`; `vcs import --input liboculus/liboculus.repos`.   The `main` branch of `g3log_ros` is also a ROS1-ROS2 hybrid.
 
 The (optional) test suite also requires Googletest and the (also optional)
-binary `oc_client` requires [CLI11](https://github.com/CLIUtils/CLI11),
-both of which are also handled by fips.
+binary `oc_client` requires [CLI11](https://github.com/CLIUtils/CLI11).
 
 Internally, the ethernet interface uses
 [Boost::asio](https://www.boost.org/doc/libs/1_66_0/doc/html/boost_asio.html).
@@ -119,4 +117,4 @@ Other files/classes:
 
 This code is released under the [BSD 3-clause license](LICENSE).
 
-This repository contains one file provided by Blueprint as part of their free "Oculus Viewer" sample application ([thirdparty/Oculus/Oculus.h](thirdpart/Oculus/Oculus.h)), which describes their protocol and data formats.   This file is distributed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+This repository contains one file provided by Blueprint as part of their free "Oculus Viewer" sample application: ([thirdparty/Oculus/Oculus.h](thirdpart/Oculus/Oculus.h)).  It describes their protocol and data formats.   This file is distributed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).

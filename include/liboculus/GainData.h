@@ -32,7 +32,7 @@
 
 #include <netinet/in.h>
 
-#include <g3log/g3log.hpp>  // needed for CHECK macro
+#include <g3log/g3log.hpp> // needed for CHECK macro
 #include <iostream>
 #include <vector>
 
@@ -43,9 +43,8 @@ namespace liboculus {
 
 // \todo  A long-term TODO: ImageData, GainData and BearingData are all
 // fairly similar in functionality, could reduce the DRY?
-template <typename T>
-class GainData {
- public:
+template <typename T> class GainData {
+public:
   typedef T DataType;
 
   GainData() : _data() { ; }
@@ -75,8 +74,8 @@ class GainData {
 
   T operator[](unsigned int i) const { return at(i); }
 
- private:
+private:
   std::vector<T> _data;
 };
 
-}  // namespace liboculus
+} // namespace liboculus

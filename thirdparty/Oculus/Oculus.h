@@ -73,12 +73,12 @@ enum OculusMessageType : uint16_t {
 };
 
 enum PingRateType : uint8_t {
-  pingRateNormal = 0x00,   // 10Hz max ping rate
-  pingRateHigh = 0x01,     // 15Hz max ping rate
-  pingRateHighest = 0x02,  // 40Hz max ping rate
-  pingRateLow = 0x03,      // 5Hz max ping rate
-  pingRateLowest = 0x04,   // 2Hz max ping rate
-  pingRateStandby = 0x05,  // Disable ping
+  pingRateNormal = 0x00,  // 10Hz max ping rate
+  pingRateHigh = 0x01,    // 15Hz max ping rate
+  pingRateHighest = 0x02, // 40Hz max ping rate
+  pingRateLow = 0x03,     // 5Hz max ping rate
+  pingRateLowest = 0x04,  // 2Hz max ping rate
+  pingRateStandby = 0x05, // Disable ping
 };
 
 // -----------------------------------------------------------------------------
@@ -119,41 +119,40 @@ enum OculusPartNumberType : uint16_t {
   partNumberEnd = 0xFFFF
 };
 struct OculusMessageHeader {
- public:
-  uint16_t oculusId;     // Fixed ID 0x4f53
-  uint16_t srcDeviceId;  // The device id of the source
-  uint16_t dstDeviceId;  // The device id of the destination
-  uint16_t msgId;        // Message identifier
+public:
+  uint16_t oculusId;    // Fixed ID 0x4f53
+  uint16_t srcDeviceId; // The device id of the source
+  uint16_t dstDeviceId; // The device id of the destination
+  uint16_t msgId;       // Message identifier
   uint16_t msgVersion;
-  uint32_t
-      payloadSize;  // The size of the message payload (header not included)
+  uint32_t payloadSize; // The size of the message payload (header not included)
   uint16_t spare2;
 };
 
 // -----------------------------------------------------------------------------
 typedef struct {
- public:
-  OculusMessageHeader head;  // The standard message header
+public:
+  OculusMessageHeader head; // The standard message header
 
   uint8_t
-      masterMode;  // mode 0 is flexi mode, needs full fire message (not
-                   // available for third party developers) mode 1 - Low
-                   // Frequency Mode (wide aperture, navigation) mode 2 - High
-                   // Frequency Mode (narrow aperture, target identification)
-  PingRateType pingRate;  // Sets the maximum ping rate.
-  uint8_t networkSpeed;   // Used to reduce the network comms speed (useful for
-                          // high latency shared links)
-  uint8_t gammaCorrection;  // 0 and 0xff = gamma correction = 1.0
-                            // Set to 127 for gamma correction = 0.5
-  uint8_t flags;  // bit 0: 0 = interpret range as percent, 1 = interpret range
-                  // as meters bit 1: 0 = 8 bit data, 1 = 16 bit data bit 2: 0 =
-                  // wont send gain, 1 = send gain bit 3: 0 = send full return
-                  // message, 1 = send simple return message
-  double range;   // The range demand in percent or m depending on flags
-  double gainPercent;   // The gain demand
-  double speedOfSound;  // ms-1, if set to zero then internal calc will apply
-                        // using salinity
-  double salinity;      // ppt, set to zero if we are in fresh water
+      masterMode; // mode 0 is flexi mode, needs full fire message (not
+                  // available for third party developers) mode 1 - Low
+                  // Frequency Mode (wide aperture, navigation) mode 2 - High
+                  // Frequency Mode (narrow aperture, target identification)
+  PingRateType pingRate;   // Sets the maximum ping rate.
+  uint8_t networkSpeed;    // Used to reduce the network comms speed (useful for
+                           // high latency shared links)
+  uint8_t gammaCorrection; // 0 and 0xff = gamma correction = 1.0
+                           // Set to 127 for gamma correction = 0.5
+  uint8_t flags; // bit 0: 0 = interpret range as percent, 1 = interpret range
+                 // as meters bit 1: 0 = 8 bit data, 1 = 16 bit data bit 2: 0 =
+                 // wont send gain, 1 = send gain bit 3: 0 = send full return
+                 // message, 1 = send simple return message
+  double range;  // The range demand in percent or m depending on flags
+  double gainPercent;  // The gain demand
+  double speedOfSound; // ms-1, if set to zero then internal calc will apply
+                       // using salinity
+  double salinity;     // ppt, set to zero if we are in fresh water
 } OculusSimpleFireMessage;
 
 typedef struct {
@@ -179,7 +178,7 @@ typedef struct {
 
 // -----------------------------------------------------------------------------
 typedef struct {
- public:
+public:
   typedef OculusSimpleFireMessage FireMsg_t;
 
   OculusSimpleFireMessage fireMessage;
@@ -208,7 +207,7 @@ typedef struct {
 } OculusSimplePingResult;
 
 typedef struct {
- public:
+public:
   typedef OculusSimpleFireMessage2 FireMsg_t;
 
   OculusSimpleFireMessage2 fireMessage;
@@ -242,7 +241,7 @@ typedef struct {
 
 // -----------------------------------------------------------------------------
 struct OculusVersionInfo {
- public:
+public:
   uint32_t firmwareVersion0; /* The arm0 firmware version major(8 bits), minor(8
                                 bits), build (16 bits) */
   uint32_t firmwareDate0;    /* The arm0 firmware date */
@@ -255,7 +254,7 @@ struct OculusVersionInfo {
 
 // -----------------------------------------------------------------------------
 struct OculusStatusMsg {
- public:
+public:
   OculusMessageHeader hdr;
 
   uint32_t deviceId;
@@ -472,12 +471,12 @@ typedef struct {
   uint8_t b0;
   uint8_t b1;
   uint8_t b2;
-  uint32_t imageOffset;  // The offset in bytes of the image data (CHN, CQI, BQI
-                         // or BMG) from the start of the buffer
+  uint32_t imageOffset; // The offset in bytes of the image data (CHN, CQI, BQI
+                        // or BMG) from the start of the buffer
   uint32_t
-      imageSize;  // The size in bytes of the image data (CHN, CQI, BQI or BMG)
-  uint32_t messageSize;  // The total size in bytes of the network message
-                         // *** NOT ADDITIONAL VARIABLES BEYOND THIS POINT ***
+      imageSize; // The size in bytes of the image data (CHN, CQI, BQI or BMG)
+  uint32_t messageSize; // The total size in bytes of the network message
+                        // *** NOT ADDITIONAL VARIABLES BEYOND THIS POINT ***
   // There will be an array of bearings (shorts) found at the end of the message
   // structure Allocated at run time short bearings[]; The bearings to each of
   // the beams in 0.01 degree resolution
@@ -517,7 +516,7 @@ struct OculusInfo {
   // Maximum high-frequency range
   double maxHF;
   // Description
-  char* model;
+  char *model;
 };
 
 #pragma pack(pop)
