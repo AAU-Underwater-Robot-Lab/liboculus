@@ -32,41 +32,104 @@
 
 #pragma once
 
-#include <cstddef>  // for size_t
+#include <cmath>
+#include <cstddef> // for size_t
 #include <string>
 #include <vector>
-#include <cmath>
 
 #include "Oculus/Oculus.h"
 
 namespace liboculus {
-    const uint16_t StatusBroadcastPort = 52102;
-    const uint16_t DataPort = 52100;
+const uint16_t StatusBroadcastPort = 52102;
+const uint16_t DataPort = 52100;
 
-    const uint8_t PacketHeaderLSB = (OCULUS_CHECK_ID & 0x00FF);
-    const uint8_t PacketHeaderMSB = (OCULUS_CHECK_ID & 0xFF00) >> 8;
+const uint8_t PacketHeaderLSB = (OCULUS_CHECK_ID & 0x00FF);
+const uint8_t PacketHeaderMSB = (OCULUS_CHECK_ID & 0xFF00) >> 8;
 
-    namespace Oculus_1200MHz {
-        const float ElevationBeamwidthDeg = 20.0;
-        const float ElevationBeamwidthRad = 20.0*M_PI/180.0;
+#define DEG2RAD(x) (x * M_PI / 180.0)
 
-        const float AzimuthBeamwidthDeg = 0.6;
-        const float AzimuthBeamwidthRad = 0.6*M_PI/180.0;
+//===================================================================
+//
+// New constants API which separates constants by both model
+// and frequency band
 
-        const float MaxRange = 40;
-    };
+namespace Oculus_M750d {
+namespace Freq_750kHz {
+const float ElevationBeamwidthDeg = 20.0;
+const float ElevationBeamwidthRad = DEG2RAD(ElevationBeamwidthDeg);
 
-    namespace Oculus_2100MHz {
-         const float ElevationBeamwidthDeg = 12.0;
-         const float ElevationBeamwidthRad = 12.0*M_PI/180.0;
+const float AzimuthBeamwidthDeg = 1.0;
+const float AzimuthBeamwidthRad = DEG2RAD(AzimuthBeamwidthDeg);
 
-         const float AzimuthBeamwidthDeg = 0.4;
-         const float AzimuthBeamwidthRad = 0.4*M_PI/180.0;
+const float MaxRange = 120;
+}; // namespace Freq_750kHz
 
-         // \todo These shouldn't be fixed, should read from Oculus.h
-         // But I don't feel like dealing with their data structure
-         const float MaxRange = 10;  // meters
-    };
+namespace Freq_1200kHz {
+const float ElevationBeamwidthDeg = 12.0;
+const float ElevationBeamwidthRad = DEG2RAD(ElevationBeamwidthDeg);
+
+const float AzimuthBeamwidthDeg = 0.6;
+const float AzimuthBeamwidthRad = DEG2RAD(AzimuthBeamwidthDeg);
+
+const float MaxRange = 40;
+}; // namespace Freq_1200kHz
+}; // namespace Oculus_M750d
+
+namespace Oculus_M1200d {
+namespace Freq_1200kHz {
+const float ElevationBeamwidthDeg = 20.0;
+const float ElevationBeamwidthRad = DEG2RAD(ElevationBeamwidthDeg);
+
+const float AzimuthBeamwidthDeg = 0.6;
+const float AzimuthBeamwidthRad = DEG2RAD(AzimuthBeamwidthDeg);
+
+const float MaxRange = 40;
+}; // namespace Freq_1200kHz
+
+namespace Freq_2100kHz {
+const float ElevationBeamwidthDeg = 12.0;
+const float ElevationBeamwidthRad = DEG2RAD(ElevationBeamwidthDeg);
+
+const float AzimuthBeamwidthDeg = 0.4;
+const float AzimuthBeamwidthRad = DEG2RAD(AzimuthBeamwidthDeg);
+
+const float MaxRange = 10;
+}; // namespace Freq_2100kHz
+}; // namespace Oculus_M1200d
+
+namespace Oculus_M3000d {
+namespace Freq_1200kHz {
+const float ElevationBeamwidthDeg = 20.0;
+const float ElevationBeamwidthRad = DEG2RAD(ElevationBeamwidthDeg);
+
+const float AzimuthBeamwidthDeg = 0.6;
+const float AzimuthBeamwidthRad = DEG2RAD(AzimuthBeamwidthDeg);
+
+const float MaxRange = 30;
+}; // namespace Freq_1200kHz
+
+namespace Freq_3000kHz {
+const float ElevationBeamwidthDeg = 20.0;
+const float ElevationBeamwidthRad = DEG2RAD(ElevationBeamwidthDeg);
+
+const float AzimuthBeamwidthDeg = 0.4;
+const float AzimuthBeamwidthRad = DEG2RAD(AzimuthBeamwidthDeg);
+
+const float MaxRange = 5;
+}; // namespace Freq_3000kHz
+}; // namespace Oculus_M3000d
+
+//===================================================================
+//
+// "Old"" constants API which only considered nominal frequency.
+// So it can't handle the case where different models may have
+// different performance at the same nominal center frequency.
+
+// For backwards compatibility
+namespace Oculus_750KHz = Oculus_M750d::Freq_750kHz;
+namespace Oculus_1200MHz = Oculus_M1200d::Freq_1200kHz;
+namespace Oculus_2100MHz = Oculus_M1200d::Freq_2100kHz;
+namespace Oculus_3000MHz = Oculus_M3000d::Freq_3000kHz;
 
 struct FlagBits {
   // bit 0: 0 = interpret range as percent, 1 = interpret range as meters
@@ -74,14 +137,15 @@ struct FlagBits {
   // bit 2: 0 = wont send gain, 1 = send gain
   // bit 3: 0 = send full return message, 1 = send simple return message
   // bit 4: "gain assistance"?
-  // bit 6: use 512 beams (vs 256): email from Blueprint said to set flags |= 0x40
+  // bit 6: use 512 beams (vs 256): email from Blueprint said to set flags |=
+  // 0x40
 
   static const uint8_t RangeAsMeters = (0x01) << 0;
-  static const uint8_t Data16Bits    = (0x01) << 1;
-  static const uint8_t DoSendGain    = (0x01) << 2;
-  static const uint8_t SimpleReturn  = (0x01) << 3;
+  static const uint8_t Data16Bits = (0x01) << 1;
+  static const uint8_t DoSendGain = (0x01) << 2;
+  static const uint8_t SimpleReturn = (0x01) << 3;
   static const uint8_t GainAssistance = (0x01) << 4;
-  static const uint8_t Do512Beams    = (0x01) << 6;
+  static const uint8_t Do512Beams = (0x01) << 6;
 };
 
   // There doesn't appear to be an enum for the masterMode (like there is

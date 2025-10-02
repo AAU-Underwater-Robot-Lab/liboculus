@@ -30,18 +30,16 @@
 
 #pragma once
 
+#include <cassert>
+#include <g3log/g3log.hpp>
 #include <memory>
 #include <string>
 #include <vector>
-#include <cassert>
 
 #include "BearingData.h"
 #include "DataTypes.h"
 #include "ImageData.h"
-
 #include "Oculus/Oculus.h"
-
-#include <g3log/g3log.hpp>
 
 namespace liboculus {
 
@@ -53,14 +51,14 @@ using std::vector;
 //  by the buffer.    Other packet types can inherit from this class
 //  to represent large structs which start with a MessageHeader
 class MessageHeader {
- public:
+public:
   MessageHeader() = default;
-  MessageHeader( const MessageHeader & ) = default;
+  MessageHeader(const MessageHeader &) = default;
 
   explicit MessageHeader(const std::shared_ptr<ByteVector> &buffer)
       : _buffer(buffer) {
-        assert(buffer->size() >= sizeof(OculusMessageHeader));
-      }
+    assert(buffer->size() >= sizeof(OculusMessageHeader));
+  }
 
   ~MessageHeader() {}
 
@@ -68,20 +66,23 @@ class MessageHeader {
   OculusMessageType msgId() const {
     return static_cast<OculusMessageType>(hdr()->msgId);
   }
-  uint16_t oculusId() const    { return hdr()->oculusId; }
+  uint16_t oculusId() const { return hdr()->oculusId; }
   uint16_t srcDeviceId() const { return hdr()->srcDeviceId; }
   uint16_t dstDeviceId() const { return hdr()->dstDeviceId; }
-  uint16_t msgVersion() const  { return hdr()->msgVersion; }
+  uint16_t msgVersion() const { return hdr()->msgVersion; }
   uint32_t payloadSize() const { return hdr()->payloadSize; }
-  uint32_t packetSize() const  { return payloadSize() + sizeof(OculusMessageHeader); }
+  uint32_t packetSize() const {
+    return payloadSize() + sizeof(OculusMessageHeader);
+  }
 
   virtual bool valid() const {
-    return hdr()->oculusId == OCULUS_CHECK_ID;  // 0x4f53
+    return hdr()->oculusId == OCULUS_CHECK_ID; // 0x4f53
   }
 
   virtual void dump() const {
     LOG(DEBUG) << "   Oculus Id: 0x" << std::hex << oculusId();
-    LOG(DEBUG) << "      Msg id: 0x" << std::hex << static_cast<uint16_t>(msgId());
+    LOG(DEBUG) << "      Msg id: 0x" << std::hex
+               << static_cast<uint16_t>(msgId());
     LOG(DEBUG) << " Msg Version: " << msgVersion();
     LOG(DEBUG) << "      Dst ID: " << std::hex << dstDeviceId();
     LOG(DEBUG) << "      Src ID: " << std::hex << srcDeviceId();
@@ -94,8 +95,8 @@ class MessageHeader {
 
   const std::shared_ptr<ByteVector> &buffer(void) const { return _buffer; }
 
- protected:
+protected:
   std::shared_ptr<ByteVector> _buffer;
-};  // class MessageHeader
+}; // class MessageHeader
 
-}  // namespace liboculus
+} // namespace liboculus

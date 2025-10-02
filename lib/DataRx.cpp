@@ -28,9 +28,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <boost/bind.hpp>
-
 #include "liboculus/DataRx.h"
+
 #include "liboculus/Constants.h"
 
 namespace liboculus {
@@ -38,35 +37,32 @@ namespace liboculus {
 namespace asio = boost::asio;
 
 DataRx::DataRx(const IoServiceThread::IoContextPtr &iosrv)
-    : OculusMessageHandler(),
-      _socket(*iosrv),
-      _buffer(std::make_shared<ByteVector>()),
-      _onConnectCallback() {
-}
+    : OculusMessageHandler(), _socket(*iosrv),
+      _buffer(std::make_shared<ByteVector>()), _onConnectCallback() {}
 
-DataRx::~DataRx() {
-}
+DataRx::~DataRx() {}
 
 void DataRx::connect(const asio::ip::address &addr) {
-  if (isConnected()) return;
+  if (isConnected())
+    return;
 
-  uint16_t port =  liboculus::DataPort;
+  uint16_t port = liboculus::DataPort;
 
   boost::asio::ip::tcp::endpoint sonarEndpoint(addr, port);
   LOG(INFO) << "Connecting to sonar at " << sonarEndpoint;
 
-  _socket.async_connect(sonarEndpoint,
-                        boost::bind(&DataRx::onConnect, this, _1));
+  _socket.async_connect(sonarEndpoint, std::bind(&DataRx::onConnect, this,
+                                                 std::placeholders::_1));
 }
 
 void DataRx::connect(const std::string &strAddr) {
-      auto addr(boost::asio::ip::address_v4::from_string(strAddr));
-      //LOG_IF(FATAL,addr.is_unspecified()) << "Couldn't parse IP address" << ipAddr;  
-      connect(addr);
+  auto addr(boost::asio::ip::address_v4::from_string(strAddr));
+  // LOG_IF(FATAL,addr.is_unspecified()) << "Couldn't parse IP address" <<
+  // ipAddr;
+  connect(addr);
 }
 
-
-void DataRx::onConnect(const boost::system::error_code& ec) {
+void DataRx::onConnect(const boost::system::error_code &ec) {
   if (ec) {
     LOG(WARNING) << "Error on connect: " << ec.message();
     _socket.close();
@@ -76,15 +72,15 @@ void DataRx::onConnect(const boost::system::error_code& ec) {
 
   LOG(DEBUG) << "Connected to sonar!";
   restartReceiveCycle();
-  if (_onConnectCallback) _onConnectCallback();
+  if (_onConnectCallback)
+    _onConnectCallback();
 }
 
 //=== Readers
-void DataRx::readUpTo(size_t bytes,
-                    StateMachineCallback callback) {
+void DataRx::readUpTo(size_t bytes, StateMachineCallback callback) {
   const size_t current_sz = _buffer->size();
   _buffer->resize(bytes);
-  asio::mutable_buffer buffer_view = asio::buffer(*_buffer)+current_sz;
+  asio::mutable_buffer buffer_view = asio::buffer(*_buffer) + current_sz;
 #if BOOST_VERSION >= 106600
   asio::async_read(_socket, buffer_view, callback);
 #else
@@ -96,7 +92,8 @@ void DataRx::restartReceiveCycle() {
   LOG(DEBUG) << "== Restarting DataRx state machine ==";
 
   // Before abandoning the current data, post that it's been received
-  if (_buffer->size() > 0) haveRead(*_buffer);
+  if (_buffer->size() > 0)
+    haveRead(*_buffer);
 
   if (_buffer.use_count() > 1) {
     _buffer = std::make_shared<ByteVector>();
@@ -104,14 +101,14 @@ void DataRx::restartReceiveCycle() {
     _buffer->clear();
   }
   readUpTo(sizeof(uint8_t),
-          boost::bind(&DataRx::rxFirstByteOculusId, this, _1, _2));
+           std::bind(&DataRx::rxFirstByteOculusId, this, std::placeholders::_1,
+                     std::placeholders::_2));
 }
-
 
 //==== States in the state machine... ====
 
-void DataRx::rxFirstByteOculusId(const boost::system::error_code& ec,
-                        std::size_t bytes_transferred) {
+void DataRx::rxFirstByteOculusId(const boost::system::error_code &ec,
+                                 std::size_t bytes_transferred) {
   if (ec) {
     LOG(WARNING) << "Error on receive of header: " << ec.message();
     goto exit;
@@ -123,7 +120,8 @@ void DataRx::rxFirstByteOculusId(const boost::system::error_code& ec,
 
   if (_buffer->data()[0] == liboculus::PacketHeaderLSB) {
     readUpTo(sizeof(uint16_t),
-              boost::bind(&DataRx::rxSecondByteOculusId, this, _1, _2));
+             std::bind(&DataRx::rxSecondByteOculusId, this,
+                       std::placeholders::_1, std::placeholders::_2));
     return;
   }
 
@@ -131,8 +129,8 @@ exit:
   restartReceiveCycle();
 }
 
-void DataRx::rxSecondByteOculusId(const boost::system::error_code& ec,
-                        std::size_t bytes_transferred) {
+void DataRx::rxSecondByteOculusId(const boost::system::error_code &ec,
+                                  std::size_t bytes_transferred) {
   if (ec) {
     LOG(WARNING) << "Error on receive of header: " << ec.message();
     goto exit;
@@ -146,7 +144,8 @@ void DataRx::rxSecondByteOculusId(const boost::system::error_code& ec,
     LOG(DEBUG) << "Received good OculusId at start of packet";
 
     readUpTo(sizeof(OculusMessageHeader),
-              boost::bind(&DataRx::rxHeader, this, _1, _2));
+             std::bind(&DataRx::rxHeader, this, std::placeholders::_1,
+                       std::placeholders::_2));
     return;
   }
 
@@ -154,16 +153,16 @@ exit:
   restartReceiveCycle();
 }
 
-void DataRx::rxHeader(const boost::system::error_code& ec,
-                        std::size_t bytes_transferred) {
+void DataRx::rxHeader(const boost::system::error_code &ec,
+                      std::size_t bytes_transferred) {
   if (ec) {
     LOG(WARNING) << "Error on receive of header: " << ec.message();
     return;
   }
 
-if (bytes_transferred != (sizeof(OculusMessageHeader)-sizeof(uint16_t))) {
-     LOG(WARNING) << "Received short header of " << bytes_transferred
-                  << " expected " << sizeof(OculusMessageHeader);
+  if (bytes_transferred != (sizeof(OculusMessageHeader) - sizeof(uint16_t))) {
+    LOG(WARNING) << "Received short header of " << bytes_transferred
+                 << " expected " << sizeof(OculusMessageHeader);
     restartReceiveCycle();
   }
 
@@ -175,17 +174,18 @@ if (bytes_transferred != (sizeof(OculusMessageHeader)-sizeof(uint16_t))) {
     return;
   }
 
-  LOG(DEBUG) << "Got message ID " <<  static_cast<int>(hdr.msgId()) << " (" << MessageTypeToString(hdr.msgId()) << ")";
+  LOG(DEBUG) << "Got message ID " << static_cast<int>(hdr.msgId()) << " ("
+             << MessageTypeToString(hdr.msgId()) << ")";
 
-  //hdr.dump();
+  // hdr.dump();
 
   const auto packetSize = hdr.packetSize();
-  readUpTo(packetSize, boost::bind(&DataRx::rxPacket, this, _1, _2));
-
+  readUpTo(packetSize, std::bind(&DataRx::rxPacket, this, std::placeholders::_1,
+                                 std::placeholders::_2));
 }
 
-void DataRx::rxPacket(const boost::system::error_code& ec,
-                                  std::size_t bytes_transferred) {
+void DataRx::rxPacket(const boost::system::error_code &ec,
+                      std::size_t bytes_transferred) {
   MessageHeader hdr(_buffer);
 
   if (ec) {
@@ -204,23 +204,23 @@ void DataRx::rxPacket(const boost::system::error_code& ec,
       SimplePingResultV1 ping(_buffer);
 
       if (ping.valid()) {
-          if (bytes_transferred < ping.payloadSize()) {
-              LOG(WARNING) << "Did not read full data packet, resetting...";
-              goto exit;
-          }
+        if (bytes_transferred < ping.payloadSize()) {
+          LOG(WARNING) << "Did not read full data packet, resetting...";
+          goto exit;
+        }
 
-          callback(ping);
+        callback(ping);
       } else {
-          LOG(WARNING) << "Incoming packet invalid";
+        LOG(WARNING) << "Incoming packet invalid";
       }
     } else if (hdr.msgVersion() == 2) {
       SimplePingResultV2 ping(_buffer);
 
       if (ping.valid()) {
-          if (bytes_transferred < ping.payloadSize()) {
-              LOG(WARNING) << "Did not read full data packet, resetting...";
-              goto exit;
-          }
+        if (bytes_transferred < ping.payloadSize()) {
+          LOG(WARNING) << "Did not read full data packet, resetting...";
+          goto exit;
+        }
 
         callback(ping);
       } else {
@@ -231,19 +231,17 @@ void DataRx::rxPacket(const boost::system::error_code& ec,
                    << " ignoring";
     }
 
-
   } else if (hdr.msgId() == messageLogs) {
     LOG(DEBUG) << "Received " << bytes_transferred << " of LogMessage data";
-    LOG(INFO) << std::string(_buffer->begin()+sizeof(OculusMessageHeader),
-                              _buffer->end());
+    LOG(INFO) << std::string(_buffer->begin() + sizeof(OculusMessageHeader),
+                             _buffer->end());
   } else {
-    LOG(WARNING) << "Ignoring " << MessageTypeToString(hdr.msgId())
-                  << " message, id " << static_cast<int>(hdr.msgId());
+    LOG(DEBUG) << "Ignoring " << MessageTypeToString(hdr.msgId())
+               << " message, id " << static_cast<int>(hdr.msgId());
   }
 
 exit:
   restartReceiveCycle();
 }
 
-
-}  // namespace liboculus
+} // namespace liboculus

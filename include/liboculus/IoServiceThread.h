@@ -30,11 +30,9 @@
 
 #pragma once
 
+#include <boost/asio.hpp>
 #include <memory>
 #include <thread>
-
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
 
 #include "g3log/g3log.hpp"
 
@@ -42,7 +40,7 @@ namespace liboculus {
 
 // Generic "worker thread" for boost::asio
 class IoServiceThread {
- public:
+public:
 #if BOOST_VERSION >= 106600
   typedef boost::asio::io_context IoContext;
 #else
@@ -61,13 +59,14 @@ class IoServiceThread {
 
   const IoContextPtr &context() { return _context; }
 
- private:
+private:
   IoContextPtr _context;
 
 #if BOOST_VERSION >= 106600
   // This class was added in later version of Boost;  not present in 1.65,
   // the version currently installed for 18.04 / ROS Melodic
-  using work_guard_type = boost::asio::executor_work_guard<boost::asio::io_context::executor_type>;
+  using work_guard_type =
+      boost::asio::executor_work_guard<boost::asio::io_context::executor_type>;
   work_guard_type _work_guard;
 #endif
 
@@ -76,4 +75,4 @@ class IoServiceThread {
   void threadExec();
 };
 
-}
+} // namespace liboculus

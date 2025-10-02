@@ -28,37 +28,34 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <string.h>
-#include <sstream>
+#include "liboculus/StatusRx.h"
 
 #include <arpa/inet.h>
+#include <string.h>
 
-#include <boost/bind.hpp>
+#include <iomanip>
+#include <sstream>
 
-#include "liboculus/StatusRx.h"
-#include "liboculus/Constants.h"
 #include "g3log/g3log.hpp"
+#include "liboculus/Constants.h"
 
 namespace liboculus {
 
-using std::string;
 using boost::asio::ip::address_v4;
+using std::string;
 
 // ----------------------------------------------------------------------------
 // StatusRx - a listening socket for oculus status messages
 
 StatusRx::StatusRx(const IoServiceThread::IoContextPtr &iosrv)
-    : _num_valid_rx(0),
-      _num_invalid_rx(0),
-      _socket(*iosrv),
-      _deadline(*iosrv),
-      _sonarStatusCallback([](const SonarStatus &, bool){}) {
+    : _num_valid_rx(0), _num_invalid_rx(0), _socket(*iosrv), _deadline(*iosrv),
+      _sonarStatusCallback([](const SonarStatus &, bool) {}) {
   doConnect();
 }
 
 void StatusRx::doConnect() {
   boost::asio::ip::udp::endpoint local(boost::asio::ip::address_v4::any(),
-                                        StatusBroadcastPort);
+                                       StatusBroadcastPort);
 
   boost::system::error_code error;
   _socket.open(boost::asio::ip::udp::v4(), error);
@@ -79,10 +76,12 @@ void StatusRx::scheduleRead() {
   _buffer.resize(sizeof(OculusStatusMsg));
   LOG(DEBUG) << "Waiting for status packet...";
   _socket.async_receive(boost::asio::buffer(_buffer),
-                        boost::bind(&StatusRx::handleRead, this, _1, _2));
+                        std::bind(&StatusRx::handleRead, this,
+                                  std::placeholders::_1,
+                                  std::placeholders::_2));
 }
 
-void StatusRx::handleRead(const boost::system::error_code& ec,
+void StatusRx::handleRead(const boost::system::error_code &ec,
                           std::size_t bytes_transferred) {
   if (ec) {
     LOG(WARNING) << "Error on receive: " << ec.message();
@@ -92,12 +91,12 @@ void StatusRx::handleRead(const boost::system::error_code& ec,
   LOG(DEBUG) << "Read " << bytes_transferred << " bytes";
 
   if (bytes_transferred != sizeof(OculusStatusMsg)) {
-      LOG(WARNING) << "Got " << bytes_transferred
-                    << " bytes, expected OculusStatusMsg of size "
-                    << sizeof(OculusStatusMsg);
-      _num_invalid_rx++;
-      return;
-    }
+    LOG(WARNING) << "Got " << bytes_transferred
+                 << " bytes, expected OculusStatusMsg of size "
+                 << sizeof(OculusStatusMsg);
+    _num_invalid_rx++;
+    return;
+  }
 
   SonarStatus status(_buffer);
   status.dump();
@@ -138,16 +137,26 @@ bool StatusRx::parseStatus(const SonarStatus &status) {
 
     // Check the pause reason
     if (checkPause) {
-      OculusPauseReasonType prt = (OculusPauseReasonType)((status_flags & 0x38) >> 3);
+      OculusPauseReasonType prt =
+          (OculusPauseReasonType)((status_flags & 0x38) >> 3);
 
       if (prt == oculusPauseMagSwitch) {
-        LOG(WARNING) << "Halt: Mag Switch Detected";
+        LOG(FATAL) << "Halt: Mag Switch Detected";
       } else if (prt == oculusPauseBootFromMain) {
-        LOG(WARNING) << "Halt: Boot From Main";
+        LOG(FATAL) << "Halt: Boot From Main";
       } else if (prt == oculusPauseFlashError) {
-        LOG(WARNING) << "Halt: Flash Error. Update firmware";
+        LOG(FATAL) << "Halt: Flash Error. Update firmware";
       } else if (prt == oculusPauseJtagLoad) {
-        LOG(WARNING) << "Halt: JTAG Load";
+        LOG(FATAL) << "Halt: JTAG Load";
+      } else if (prt == oculusPauseFirmwareError) {
+        LOG(FATAL) << "Halt: Firmware error";
+      } else if (prt == oculusPauseCompatibilityError) {
+        LOG(FATAL) << "Halt: Compatibility error";
+      } else if (prt == oculusPauseBrownout) {
+        LOG(FATAL) << "Halt: Brownout";
+      } else {
+        LOG(FATAL) << "Halt: unknown error (0x" << std::hex
+                   << static_cast<int>(prt) << ")";
       }
 
       return false;
@@ -166,7 +175,7 @@ bool StatusRx::parseStatus(const SonarStatus &status) {
 
     const bool transmitError = (status_flags & (1 << 16));
     if (transmitError) {
-      LOG(WARNING) << "Critical: Transmit Circuit Failure";
+      LOG(FATAL) << "Critical: Transmit Circuit Failure";
       return false;
     }
   }
@@ -174,4 +183,4 @@ bool StatusRx::parseStatus(const SonarStatus &status) {
   return true;
 }
 
-}  // namespace liboculus
+} // namespace liboculus

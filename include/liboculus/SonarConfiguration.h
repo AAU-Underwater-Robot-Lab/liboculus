@@ -30,8 +30,8 @@
 
 #pragma once
 
-#include <vector>
 #include <boost/asio.hpp>
+#include <vector>
 
 #include "Oculus/Oculus.h"
 #include "liboculus/Constants.h"
@@ -44,12 +44,10 @@ namespace liboculus {
 // the shadow copy of the SimpleFireMessage{2}, instead
 // just make it at time of serialization.
 class SonarConfiguration {
- public:
-
+public:
   SonarConfiguration();
 
-  template <typename FireMsg_t>
-  std::vector<uint8_t> serialize() const;
+  template <typename FireMsg_t> std::vector<uint8_t> serialize() const;
 
   // Setter functions
   SonarConfiguration &setGamma(int input);
@@ -67,19 +65,18 @@ class SonarConfiguration {
   }
 
   SonarConfiguration &setDataSize(DataSizeType sz);
-  DataSizeType getDataSize() const         { return _dataSize; }
+  DataSizeType getDataSize() const { return _dataSize; }
 
   SonarConfiguration &setRange(double input);
 
   SonarConfiguration &sendRangeAsMeters(bool v);
-  SonarConfiguration &sendRangeAsMeters()  { return sendRangeAsMeters(true); }
+  SonarConfiguration &sendRangeAsMeters() { return sendRangeAsMeters(true); }
   SonarConfiguration &sendRangeAsPercent() { return sendRangeAsMeters(false); }
-  bool getSendRangeAsMeters() const        { return _sendRangeAsMeters; }
-
+  bool getSendRangeAsMeters() const { return _sendRangeAsMeters; }
 
   SonarConfiguration &setSendGain(bool v);
-  SonarConfiguration &sendGain()       { return setSendGain(true); }
-  SonarConfiguration &dontSendGain()   { return setSendGain(false); }
+  SonarConfiguration &sendGain() { return setSendGain(true); }
+  SonarConfiguration &dontSendGain() { return setSendGain(false); }
 
   SonarConfiguration &setSimpleReturn(bool v);
 
@@ -98,11 +95,11 @@ class SonarConfiguration {
 
   void dump() const;
 
- private:
-
+private:
   void updateFlags() const;
 
-  mutable OculusSimpleFireMessage2 _sfm;
+  typedef OculusSimpleFireMessage2 ConfigFireMessage;
+  mutable ConfigFireMessage _sfm;
 
   bool _sendRangeAsMeters;
   float _rangeInMeters;
@@ -114,6 +111,6 @@ class SonarConfiguration {
 
   DataSizeType _dataSize;
 
-};  // class SonarConfiguration
+}; // class SonarConfiguration
 
-}  // namespace liboculus
+} // namespace liboculus

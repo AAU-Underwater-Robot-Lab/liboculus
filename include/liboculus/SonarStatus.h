@@ -30,41 +30,37 @@
 
 #pragma once
 
-#include <thread>
-#include <chrono>
-#include <mutex>
-#include <condition_variable>
-
 #include <boost/asio.hpp>
+#include <chrono>
+#include <condition_variable>
+#include <mutex>
+#include <thread>
 
+#include "Oculus/Oculus.h"
 #include "g3log/g3log.hpp"
 #include "liboculus/DataTypes.h"
-#include "Oculus/Oculus.h"
 
 namespace liboculus {
 
 /// Thin wrapper around OculusStatusMsg
 class SonarStatus {
- public:
+public:
   SonarStatus(const ByteVector &buffer);
 
-
-  const OculusStatusMsg *msg( void ) const {
+  const OculusStatusMsg *msg(void) const {
     return reinterpret_cast<const OculusStatusMsg *>(_buffer.data());
   }
 
-  bool valid() const { return true; } //todo:  actually validate the packet
+  bool valid() const { return true; } // todo:  actually validate the packet
 
   // Print most recent OculusStatusMsg to LOG(DEBUG)
   void dump() const;
 
   boost::asio::ip::address ipAddr() const;
-  uint32_t status() const { 
-    return msg()->status;
-  }
+  uint32_t status() const { return msg()->status; }
 
- private:
+private:
   const ByteVector &_buffer;
 };
 
-}  // namespace liboculus
+} // namespace liboculus

@@ -30,22 +30,22 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <thread>
 #include <vector>
-#include <memory>
 
 #include "liboculus/IoServiceThread.h"
+#include "liboculus/OculusMessageHandler.h"
 #include "liboculus/SimplePingResult.h"
 #include "liboculus/SonarConfiguration.h"
-#include "liboculus/OculusMessageHandler.h"
 
 namespace liboculus {
 
 using std::shared_ptr;
 
 class DataRx : public OculusMessageHandler {
- public:
+public:
   explicit DataRx(const IoServiceThread::IoContextPtr &iosrv);
   ~DataRx();
 
@@ -54,7 +54,7 @@ class DataRx : public OculusMessageHandler {
   void connect(const boost::asio::ip::address &addr);
   void connect(const std::string &strAddr);
 
-  typedef std::function< void() > OnConnectCallback;
+  typedef std::function<void()> OnConnectCallback;
   void setOnConnectCallback(OnConnectCallback callback) {
     _onConnectCallback = callback;
   }
@@ -69,38 +69,36 @@ class DataRx : public OculusMessageHandler {
 
   // Implement data read / data written hooks as virtual functions rather
   // rather than callbacks.
-  virtual void haveWritten(const ByteVector &bytes) {;}
-  virtual void haveRead(const ByteVector &bytes) {;}
+  virtual void haveWritten(const ByteVector &bytes) { ; }
+  virtual void haveRead(const ByteVector &bytes) { ; }
 
- private:
-  void onConnect(const boost::system::error_code& error);
+private:
+  void onConnect(const boost::system::error_code &error);
 
   // Initiates a network read.
   // Note this function reads until the **total number of bytes
   // in _buffer == bytes**   The actual number of bytes requested
   // from the network depends on the size of _buffer at the start
   // of the function and is tpically less than bytes.
-  typedef std::function<void(const boost::system::error_code&, std::size_t)> StateMachineCallback;
-  void readUpTo(size_t bytes,
-                StateMachineCallback callback);
+  typedef std::function<void(const boost::system::error_code &, std::size_t)>
+      StateMachineCallback;
+  void readUpTo(size_t bytes, StateMachineCallback callback);
 
   // This function is "reset the receive state machine"
   void restartReceiveCycle();
 
   // All rx* functions are states in the receive state machine
-  void rxFirstByteOculusId(const boost::system::error_code& ec,
-                  std::size_t bytes_transferred);
+  void rxFirstByteOculusId(const boost::system::error_code &ec,
+                           std::size_t bytes_transferred);
 
-  void rxSecondByteOculusId(const boost::system::error_code& ec,
-                  std::size_t bytes_transferred);
+  void rxSecondByteOculusId(const boost::system::error_code &ec,
+                            std::size_t bytes_transferred);
 
-  void rxHeader(const boost::system::error_code& ec,
-                  std::size_t bytes_transferred);
+  void rxHeader(const boost::system::error_code &ec,
+                std::size_t bytes_transferred);
 
-  void rxPacket(const boost::system::error_code& ec,
-                  std::size_t bytes_transferred);
-
-
+  void rxPacket(const boost::system::error_code &ec,
+                std::size_t bytes_transferred);
 
   boost::asio::ip::tcp::socket _socket;
 
@@ -108,10 +106,9 @@ class DataRx : public OculusMessageHandler {
 
   OnConnectCallback _onConnectCallback;
 
-};  // class DataRx
+}; // class DataRx
 
-
-template <typename FireMsg_t = OculusSimpleFireMessage2>
+template <typename FireMsg_t>
 void DataRx::sendSimpleFireMessage(const SonarConfiguration &config) {
   if (!isConnected()) {
     LOG(WARNING) << "Can't send to sonar, not connected";
@@ -131,4 +128,4 @@ void DataRx::sendSimpleFireMessage(const SonarConfiguration &config) {
   }
 }
 
-}  // namespace liboculus
+} // namespace liboculus

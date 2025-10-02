@@ -30,10 +30,10 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <thread>
 #include <vector>
-#include <memory>
 
 #include "liboculus/IoServiceThread.h"
 #include "liboculus/SimplePingResult.h"
@@ -47,29 +47,22 @@ using std::shared_ptr;
 // and will call callbacks when it happens.
 // Both DataRx and SonarPlay inherit from this class.
 class OculusMessageHandler {
- public:
-  OculusMessageHandler()
-    : _simplePingCallback(),
-      _simplePing2Callback()
-      {;}
+public:
+  OculusMessageHandler() : _simplePingCallback(), _simplePing2Callback() { ; }
 
-  template <typename T>
-  using Callback = std::function< void(const T &) >;
+  template <typename T> using Callback = std::function<void(const T &)>;
 
-  template <typename T>
-  void setCallback(Callback<T> callback);
+  template <typename T> void setCallback(Callback<T> callback);
 
-  template <typename T>
-  void callback(const T &);
+  template <typename T> void callback(const T &);
 
-  typedef Callback<SimplePingResultV1>  SimplePingCallback;
-  typedef Callback<SimplePingResultV2>  SimplePing2Callback;
+  typedef Callback<SimplePingResultV1> SimplePingCallback;
+  typedef Callback<SimplePingResultV2> SimplePing2Callback;
 
-// protected:
+  // protected:
 
-  SimplePingCallback  _simplePingCallback;
+  SimplePingCallback _simplePingCallback;
   SimplePing2Callback _simplePing2Callback;
-
 };
 
-}  // namespace liboculus
+} // namespace liboculus
