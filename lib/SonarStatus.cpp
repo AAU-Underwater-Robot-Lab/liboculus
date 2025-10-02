@@ -73,4 +73,4 @@ void SonarStatus::dump() const {
              << msg()->versionInfo.firmwareDate2;
 }
 
-}  // namespace liboculus
+} // namespace liboculus

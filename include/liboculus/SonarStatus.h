@@ -44,14 +44,14 @@ namespace liboculus {
 
 /// Thin wrapper around OculusStatusMsg
 class SonarStatus {
- public:
+public:
   SonarStatus(const ByteVector &buffer);
 
   const OculusStatusMsg *msg(void) const {
     return reinterpret_cast<const OculusStatusMsg *>(_buffer.data());
   }
 
-  bool valid() const { return true; }  // todo:  actually validate the packet
+  bool valid() const { return true; } // todo:  actually validate the packet
 
   // Print most recent OculusStatusMsg to LOG(DEBUG)
   void dump() const;
@@ -59,8 +59,8 @@ class SonarStatus {
   boost::asio::ip::address ipAddr() const;
   uint32_t status() const { return msg()->status; }
 
- private:
+private:
   const ByteVector &_buffer;
 };
 
-}  // namespace liboculus
+} // namespace liboculus

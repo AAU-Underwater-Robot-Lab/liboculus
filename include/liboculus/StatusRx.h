@@ -49,7 +49,7 @@ using boost::asio::ip::udp;
 //
 //
 class StatusRx {
- public:
+public:
   explicit StatusRx(const IoServiceThread::IoContextPtr &iosrv);
 
   ~StatusRx() {}
@@ -60,7 +60,7 @@ class StatusRx {
     _sonarStatusCallback = callback;
   }
 
- private:
+private:
   void doConnect();
 
   void scheduleRead();
@@ -72,8 +72,8 @@ class StatusRx {
   std::vector<uint8_t> _buffer;
 
   // uint16_t     _port;       // Port to listen on
-  uint16_t _num_valid_rx;    // Number of valid status messages
-  uint16_t _num_invalid_rx;  // Number of invalid status messages
+  uint16_t _num_valid_rx;   // Number of valid status messages
+  uint16_t _num_invalid_rx; // Number of invalid status messages
 
   udp::socket _socket;
 
@@ -82,4 +82,4 @@ class StatusRx {
   SonarStatusCallback _sonarStatusCallback;
 };
 
-}  // namespace liboculus
+} // namespace liboculus

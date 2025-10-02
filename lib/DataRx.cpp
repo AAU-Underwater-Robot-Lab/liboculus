@@ -30,8 +30,6 @@
 
 #include "liboculus/DataRx.h"
 
-#include <boost/bind.hpp>
-
 #include "liboculus/Constants.h"
 
 namespace liboculus {
@@ -49,8 +47,9 @@ DataRx::DataRx(const IoServiceThread::IoContextPtr& iosrv)
 
 DataRx::~DataRx() {}
 
-void DataRx::connect(const asio::ip::address& addr) {
-  if (isConnected()) return;
+void DataRx::connect(const asio::ip::address &addr) {
+  if (isConnected())
+    return;
 
   uint16_t port = liboculus::DataPort;
 
@@ -58,18 +57,18 @@ void DataRx::connect(const asio::ip::address& addr) {
   LOG(DEBUG) << "Attempting to connect to sonar at " << sonarEndpoint;
   is_connected_.set(true);
 
-  _socket.async_connect(sonarEndpoint,
-                        boost::bind(&DataRx::onConnect, this, _1));
+  _socket.async_connect(sonarEndpoint, std::bind(&DataRx::onConnect, this,
+                                                 std::placeholders::_1));
 }
 
-void DataRx::connect(const std::string& strAddr) {
+void DataRx::connect(const std::string &strAddr) {
   auto addr(boost::asio::ip::address_v4::from_string(strAddr));
   // LOG_IF(FATAL,addr.is_unspecified()) << "Couldn't parse IP address" <<
   // ipAddr;
   connect(addr);
 }
 
-void DataRx::onConnect(const boost::system::error_code& ec) {
+void DataRx::onConnect(const boost::system::error_code &ec) {
   if (ec) {
     LOG(DEBUG) << "Error on connect: " << ec.message();
     disconnect();
@@ -81,7 +80,8 @@ void DataRx::onConnect(const boost::system::error_code& ec) {
 
   LOG(INFO) << "Successful connection to sonar!";
   restartReceiveCycle();
-  if (_onConnectCallback) _onConnectCallback();
+  if (_onConnectCallback)
+    _onConnectCallback();
 }
 
 void DataRx::disconnect() {
@@ -118,7 +118,8 @@ void DataRx::restartReceiveCycle() {
   LOG(DEBUG) << "== Restarting DataRx state machine ==";
 
   // Before abandoning the current data, post that it's been received
-  if (_buffer->size() > 0) haveRead(*_buffer);
+  if (_buffer->size() > 0)
+    haveRead(*_buffer);
 
   if (_buffer.use_count() > 1) {
     _buffer = std::make_shared<ByteVector>();
@@ -130,15 +131,16 @@ void DataRx::restartReceiveCycle() {
   const auto timeout = boost::posix_time::seconds(timeout_secs_);
   timeout_timer_.expires_from_now(timeout);
   timeout_timer_.async_wait(
-      boost::bind(&DataRx::onTimeout, this, boost::placeholders::_1));
+      std::bind(&DataRx::onTimeout, this, std::placeholders::_1));
 
   readUpTo(sizeof(uint8_t),
-           boost::bind(&DataRx::rxFirstByteOculusId, this, _1, _2));
+           std::bind(&DataRx::rxFirstByteOculusId, this, std::placeholders::_1,
+                     std::placeholders::_2));
 }
 
 //==== States in the state machine... ====
 
-void DataRx::rxFirstByteOculusId(const boost::system::error_code& ec,
+void DataRx::rxFirstByteOculusId(const boost::system::error_code &ec,
                                  std::size_t bytes_transferred) {
   if (ec.value() == boost::asio::error::basic_errors::operation_aborted) {
     LOG(DEBUG) << "Receive cancelled, giving up...";
@@ -158,11 +160,13 @@ void DataRx::rxFirstByteOculusId(const boost::system::error_code& ec,
 
   if (_buffer->data()[0] == liboculus::PacketHeaderLSB) {
     readUpTo(sizeof(uint16_t),
-             boost::bind(&DataRx::rxSecondByteOculusId, this, _1, _2));
+             std::bind(&DataRx::rxSecondByteOculusId, this,
+                       std::placeholders::_1, std::placeholders::_2));
+    return;
   }
 }
 
-void DataRx::rxSecondByteOculusId(const boost::system::error_code& ec,
+void DataRx::rxSecondByteOculusId(const boost::system::error_code &ec,
                                   std::size_t bytes_transferred) {
   if (ec.value() == boost::asio::error::basic_errors::operation_aborted) {
     LOG(DEBUG) << "Receive ancelled, giving up...";
@@ -181,7 +185,8 @@ void DataRx::rxSecondByteOculusId(const boost::system::error_code& ec,
     LOG(DEBUG) << "Received good OculusId at start of packet";
 
     readUpTo(sizeof(OculusMessageHeader),
-             boost::bind(&DataRx::rxHeader, this, _1, _2));
+             std::bind(&DataRx::rxHeader, this, std::placeholders::_1,
+                       std::placeholders::_2));
     return;
   }
 
@@ -189,7 +194,7 @@ exit:
   restartReceiveCycle();
 }
 
-void DataRx::rxHeader(const boost::system::error_code& ec,
+void DataRx::rxHeader(const boost::system::error_code &ec,
                       std::size_t bytes_transferred) {
   if (ec.value() == boost::asio::error::basic_errors::operation_aborted) {
     LOG(DEBUG) << "Receive cancelled, giving up...";
@@ -220,10 +225,11 @@ void DataRx::rxHeader(const boost::system::error_code& ec,
   // hdr.dump();
 
   const auto packetSize = hdr.packetSize();
-  readUpTo(packetSize, boost::bind(&DataRx::rxPacket, this, _1, _2));
+  readUpTo(packetSize, std::bind(&DataRx::rxPacket, this, std::placeholders::_1,
+                                 std::placeholders::_2));
 }
 
-void DataRx::rxPacket(const boost::system::error_code& ec,
+void DataRx::rxPacket(const boost::system::error_code &ec,
                       std::size_t bytes_transferred) {
   MessageHeader hdr(_buffer);
 
@@ -287,4 +293,4 @@ exit:
   restartReceiveCycle();
 }
 
-}  // namespace liboculus
+} // namespace liboculus

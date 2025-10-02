@@ -33,7 +33,7 @@
 
 #pragma once
 
-#include <g3log/g3log.hpp>  // needed for CHECK macro
+#include <g3log/g3log.hpp> // needed for CHECK macro
 #include <iostream>
 
 #include "DataTypes.h"
@@ -42,28 +42,20 @@
 namespace liboculus {
 
 class ImageData {
- public:
+public:
   ImageData()
-      : _data(nullptr),
-        _dataSize(0),
-        _imageSize(0),
-        _numRanges(0),
-        _numBeams(0),
-        _stride(0),
-        _offset(0) {}
+      : _data(nullptr), _dataSize(0), _imageSize(0), _numRanges(0),
+        _numBeams(0), _stride(0), _offset(0) {}
 
   ImageData(const ImageData &other) = default;
 
   ImageData(const uint8_t *data, uint32_t imageSize, uint16_t nRanges,
             uint16_t nBeams, uint8_t dataSize, uint16_t stride = 0,
             uint16_t offset = 0)
-      : _data(data),
-        _dataSize(dataSize),
-        _imageSize(imageSize),
-        _numRanges(nRanges),
-        _numBeams(nBeams),
+      : _data(data), _dataSize(dataSize), _imageSize(imageSize),
+        _numRanges(nRanges), _numBeams(nBeams),
         _stride(stride == 0 ? nBeams * dataSize
-                            : stride),  // Stride is in _bytes_
+                            : stride), // Stride is in _bytes_
         _offset(offset) {}
 
   uint16_t nRanges() const { return _numRanges; }
@@ -124,11 +116,11 @@ class ImageData {
     return 0;
   }
 
- private:
+private:
   const uint8_t *_data;
   uint8_t _dataSize;
   uint32_t _imageSize;
   size_t _numRanges, _numBeams, _stride, _offset;
-};  // class ImageData
+}; // class ImageData
 
-}  // namespace liboculus
+} // namespace liboculus

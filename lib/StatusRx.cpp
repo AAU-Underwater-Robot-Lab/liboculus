@@ -33,7 +33,6 @@
 #include <arpa/inet.h>
 #include <string.h>
 
-#include <boost/bind.hpp>
 #include <iomanip>
 #include <sstream>
 
@@ -49,10 +48,7 @@ using std::string;
 // StatusRx - a listening socket for oculus status messages
 
 StatusRx::StatusRx(const IoServiceThread::IoContextPtr &iosrv)
-    : _num_valid_rx(0),
-      _num_invalid_rx(0),
-      _socket(*iosrv),
-      _deadline(*iosrv),
+    : _num_valid_rx(0), _num_invalid_rx(0), _socket(*iosrv), _deadline(*iosrv),
       _sonarStatusCallback([](const SonarStatus &, bool) {}) {
   doConnect();
 }
@@ -80,7 +76,9 @@ void StatusRx::scheduleRead() {
   _buffer.resize(sizeof(OculusStatusMsg));
   LOG(DEBUG) << "Waiting for status packet...";
   _socket.async_receive(boost::asio::buffer(_buffer),
-                        boost::bind(&StatusRx::handleRead, this, _1, _2));
+                        std::bind(&StatusRx::handleRead, this,
+                                  std::placeholders::_1,
+                                  std::placeholders::_2));
 }
 
 void StatusRx::handleRead(const boost::system::error_code &ec,
@@ -185,4 +183,4 @@ bool StatusRx::parseStatus(const SonarStatus &status) {
   return true;
 }
 
-}  // namespace liboculus
+} // namespace liboculus

@@ -44,11 +44,10 @@ namespace liboculus {
 // the shadow copy of the SimpleFireMessage{2}, instead
 // just make it at time of serialization.
 class SonarConfiguration {
- public:
+public:
   SonarConfiguration();
 
-  template <typename FireMsg_t>
-  std::vector<uint8_t> serialize() const;
+  template <typename FireMsg_t> std::vector<uint8_t> serialize() const;
 
   // Setter functions
   SonarConfiguration &setGamma(int input);
@@ -96,7 +95,7 @@ class SonarConfiguration {
 
   void dump() const;
 
- private:
+private:
   void updateFlags() const;
 
   typedef OculusSimpleFireMessage2 ConfigFireMessage;
@@ -112,6 +111,6 @@ class SonarConfiguration {
 
   DataSizeType _dataSize;
 
-};  // class SonarConfiguration
+}; // class SonarConfiguration
 
-}  // namespace liboculus
+} // namespace liboculus

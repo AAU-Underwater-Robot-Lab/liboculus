@@ -67,4 +67,4 @@ bool checkPingAgreesWithConfig(const SimplePingResult<PingT> &ping,
   return true;
 }
 
-}  // namespace liboculus
+} // namespace liboculus
