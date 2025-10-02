@@ -36,14 +36,10 @@ namespace liboculus {
 
 namespace asio = boost::asio;
 
-DataRx::DataRx(const IoServiceThread::IoContextPtr& iosrv)
-    : OculusMessageHandler(),
-      _socket(*iosrv),
-      _buffer(std::make_shared<ByteVector>()),
-      _onConnectCallback(),
-      is_connected_(false),
-      timeout_secs_(2),
-      timeout_timer_(*iosrv) {}
+DataRx::DataRx(const IoServiceThread::IoContextPtr &iosrv)
+    : OculusMessageHandler(), _socket(*iosrv),
+      _buffer(std::make_shared<ByteVector>()), _onConnectCallback(),
+      is_connected_(false), timeout_secs_(2), timeout_timer_(*iosrv) {}
 
 DataRx::~DataRx() {}
 
@@ -88,10 +84,11 @@ void DataRx::disconnect() {
   LOG(DEBUG) << " ... disconnecting";
   _socket.close();
   is_connected_.set(false);
-  if (_onDisconnectCallback) _onDisconnectCallback();
+  if (_onDisconnectCallback)
+    _onDisconnectCallback();
 }
 
-void DataRx::onTimeout(const boost::system::error_code& ec) {
+void DataRx::onTimeout(const boost::system::error_code &ec) {
   if (ec == boost::asio::error::operation_aborted) {
     return;
   } else if (ec) {
@@ -99,7 +96,8 @@ void DataRx::onTimeout(const boost::system::error_code& ec) {
   }
   LOG(DEBUG) << "!! No data from sonar in " << timeout_secs_
              << " seconds, timeout";
-  if (_onTimeoutCallback) _onTimeoutCallback();
+  if (_onTimeoutCallback)
+    _onTimeoutCallback();
 }
 
 //=== Readers
