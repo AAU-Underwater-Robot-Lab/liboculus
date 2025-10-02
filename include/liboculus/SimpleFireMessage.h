@@ -48,7 +48,7 @@ using std::vector;
 
 // A simple parser of flag bytes
 class OculusSimpleFireFlags {
- public:
+public:
   OculusSimpleFireFlags() = delete;
   OculusSimpleFireFlags(const uint8_t flags) : _data(flags) { ; }
 
@@ -59,13 +59,12 @@ class OculusSimpleFireFlags {
   bool getGainAssistance() const { return _data & FlagBits::GainAssistance; }
   bool get512Beams() const { return _data & FlagBits::Do512Beams; }
 
- private:
+private:
   uint8_t _data;
 };
 
-template <typename FireMsgT>
-class SimpleFireMessage : public MessageHeader {
- public:
+template <typename FireMsgT> class SimpleFireMessage : public MessageHeader {
+public:
   SimpleFireMessage() = default;
   SimpleFireMessage(const SimpleFireMessage &other) = default;
 
@@ -83,9 +82,9 @@ class SimpleFireMessage : public MessageHeader {
 
   float range() const;
 
- protected:
+protected:
   OculusSimpleFireFlags _flags;
-};  // class SimpleFireMessage
+}; // class SimpleFireMessage
 
 template <typename FireMsgT>
 SimpleFireMessage<FireMsgT>::SimpleFireMessage(
@@ -94,8 +93,7 @@ SimpleFireMessage<FireMsgT>::SimpleFireMessage(
   assert(buffer->size() >= sizeof(FireMsgT));
 }
 
-template <typename FireMsgT>
-void SimpleFireMessage<FireMsgT>::dump() const {
+template <typename FireMsgT> void SimpleFireMessage<FireMsgT>::dump() const {
   MessageHeader::dump();
 
   LOG(DEBUG) << "        Mode: "
@@ -118,4 +116,4 @@ void SimpleFireMessage<FireMsgT>::dump() const {
   LOG(DEBUG) << "      Gain pct: " << this->fireMsg()->gainPercent;
 }
 
-}  // namespace liboculus
+} // namespace liboculus

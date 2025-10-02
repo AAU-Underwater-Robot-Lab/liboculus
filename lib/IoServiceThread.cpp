@@ -28,9 +28,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "liboculus/IoServiceThread.h"
+#include <iostream>
 
-#include <boost/bind.hpp>
+#include "liboculus/IoServiceThread.h"
 
 namespace liboculus {
 
@@ -47,13 +47,14 @@ IoServiceThread::IoServiceThread()
 IoServiceThread::~IoServiceThread() {}
 
 void IoServiceThread::start() {
-  if (_thread) return;  // running
-  _thread.reset(
-      new std::thread(boost::bind(&IoServiceThread::threadExec, this)));
+  if (_thread)
+    return; // running
+  _thread.reset(new std::thread(std::bind(&IoServiceThread::threadExec, this)));
 }
 
 void IoServiceThread::stop() {
-  if (!_thread) return;
+  if (!_thread)
+    return;
 #if BOOST_VERSION >= 106600
   _work_guard.reset();
 #endif
@@ -61,12 +62,20 @@ void IoServiceThread::stop() {
 }
 
 void IoServiceThread::join() {
-  if (!_thread) return;
+  if (!_thread)
+    return;
   _thread->join();
   _context->reset();
   _thread.reset();
 }
 
-void IoServiceThread::threadExec() { _context->run(); }
+void IoServiceThread::threadExec() {
+  try {
+    _context->run();
+  } catch (std::exception& ex) {
+    std::cerr << "!! Unhandled ASIO exception in IoServiceThread: " << ex.what()
+              << std::endl;
+  }
+}
 
-}  // namespace liboculus
+} // namespace liboculus

@@ -62,7 +62,7 @@ using std::vector;
 
 template <typename Ping_t>
 class SimplePingResult : public SimpleFireMessage<typename Ping_t::FireMsg_t> {
- public:
+public:
   typedef SimpleFireMessage<typename Ping_t::FireMsg_t> SimpleFireMsg_t;
   typedef GainData<float> GainData_t;
 
@@ -84,13 +84,13 @@ class SimplePingResult : public SimpleFireMessage<typename Ping_t::FireMsg_t> {
   bool valid() const override;
   void dump() const override;
 
- private:
+private:
   // Objects which create OOI overlays the _buffer for  easier interpretation
   BearingData _bearings;
 
   GainData_t _gains;
   ImageData _image;
-};  // class SimplePingResult
+}; // class SimplePingResult
 
 typedef SimplePingResult<OculusSimplePingResult> SimplePingResultV1;
 typedef SimplePingResult<OculusSimplePingResult2> SimplePingResultV2;
@@ -138,10 +138,11 @@ const Ping_t *SimplePingResult<Ping_t>::ping() const {
   return reinterpret_cast<const Ping_t *>(this->buffer()->data());
 }
 
-template <typename Ping_t>
-bool SimplePingResult<Ping_t>::valid() const {
-  if (this->buffer()->size() < sizeof(OculusMessageHeader)) return false;
-  if (this->buffer()->size() < this->packetSize()) return false;
+template <typename Ping_t> bool SimplePingResult<Ping_t>::valid() const {
+  if (this->buffer()->size() < sizeof(OculusMessageHeader))
+    return false;
+  if (this->buffer()->size() < this->packetSize())
+    return false;
 
   if (!MessageHeader::valid()) {
     LOG(WARNING) << "Header not valid";
@@ -165,8 +166,7 @@ bool SimplePingResult<Ping_t>::valid() const {
   return true;
 }
 
-template <typename Ping_t>
-void SimplePingResult<Ping_t>::dump() const {
+template <typename Ping_t> void SimplePingResult<Ping_t>::dump() const {
   LOG(DEBUG) << "--------------";
   SimpleFireMsg_t::dump();
 
@@ -200,4 +200,4 @@ void SimplePingResult<Ping_t>::dump() const {
   LOG(DEBUG) << "--------------";
 }
 
-}  // namespace liboculus
+} // namespace liboculus

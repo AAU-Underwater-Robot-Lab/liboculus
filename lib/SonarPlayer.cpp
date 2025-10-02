@@ -49,11 +49,12 @@ using liboculus::MessageHeader;
 using liboculus::SimplePingResult;
 
 /// Static function which automatically detects file type
-shared_ptr<SonarPlayerBase> SonarPlayerBase::OpenFile(
-    const std::string &filename) {
+shared_ptr<SonarPlayerBase>
+SonarPlayerBase::OpenFile(const std::string &filename) {
   std::ifstream f(filename);
 
-  if (!f.is_open()) return nullptr;
+  if (!f.is_open())
+    return nullptr;
 
   char c;
   f.get(c);
@@ -106,7 +107,8 @@ bool RawSonarPlayer::nextPing() {
              sizeof(OculusMessageHeader));
 
   MessageHeader header(buffer);
-  if (!header.valid()) return false;
+  if (!header.valid())
+    return false;
 
   LOG(DEBUG) << "Reading " << header.payloadSize() << " additional bytes";
 
@@ -127,4 +129,4 @@ bool RawSonarPlayer::nextPing() {
   return true;
 }
 
-}  // namespace liboculus
+} // namespace liboculus

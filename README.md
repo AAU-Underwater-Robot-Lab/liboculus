@@ -1,7 +1,9 @@
 
 # liboculus
 
-[![Build Status](https://github.drone.camhd.science/api/badges/apl-ocean-engineering/liboculus/status.svg)](https://github.drone.camhd.science/apl-ocean-engineering/liboculus)
+> [!WARNING]
+>
+> October 2025.  Please note we are entering a period of active development on this repo.   The previous version has been archived as [`v1.2.0`](https://github.com/apl-ocean-engineering/liboculus/tree/v1.2.0).  Going forward we expect to make breaking changes.
 
 (No, sadly, not that kind of [Oculus](https://www.oculus.com/))
 
@@ -13,7 +15,9 @@ This library contains code for:
   - Decoding and parsing fields from the resulting ping messages from the sonar.
   - Loading and parsing sonar data recorded as either:
     - Raw streams of binary packets.
-    - **Note:** This repo includes scaffold code for reading `.oculus` files saved from the Blueprint GUI, but that format is proprietary and undocumented **we cannot parse `.oculus` files.**
+    - **Note:** This repo includes scaffold code for reading `.oculus` files saved from the Blueprint GUI, but that format is proprietary and undocumented. **We cannot parse `.oculus` files!!**
+
+This package is designed to build in both ROS1 (catkin) and ROS2 (colcon) environments, however it contains no ROS-specific code and could be integrated into other non-ROS environments with some work.
 
 The library contains no special provisions for *saving* sonar data,
 but it's straightforward to write packets as a raw binary stream
@@ -23,21 +27,23 @@ but it's straightforward to write packets as a raw binary stream
 ---
 ## Build/Installation
 
-This is a hybrid repository:
+This is a hybrid repository which builds in either ROS1 or ROS2, though there are no ROS dependencies in the code.
 
-* We primarily build using catkin, though there are no ROS dependencies in the code. We hope the code is still useful for others looking to talk to the Oculus.
+We hope the code is still useful for others looking to talk to the Oculus.
 
-* Historically, the repo has also supported the [fips](http://floooh.github.io/fips/) C++ dependency management tool. To build with fips: `./fips build`
+> [!NOTE] [fips](http://floooh.github.io/fips/) support has been removed from this branch.
 
 The primary dependency is on [g3log](https://github.com/KjellKod/g3log).
-* If using catkin, there are two options:
-  * clone [g3log_ros](https://gitlab.com/apl-ocean-engineering/g3log_ros) into your workspace's `src/` directory
-  * use the provided `liboculus.rosinstall` file: `cd <catkin_ws>/src`; `vcs import --input liboculus/liboculus.repos`
-* It will be handled automagically if using fips.
+* If using either ROS1 or ROS2, use the provided `liboculus.rosinstall` file:
+
+```
+cd <catkin_ws>/src`; `vcs import --input liboculus/liboculus.repos
+```
+
+The `main` branch of `g3log_ros` is also a ROS1-ROS2 hybrid.
 
 The (optional) test suite also requires Googletest and the (also optional)
-binary `oc_client` requires [CLI11](https://github.com/CLIUtils/CLI11),
-both of which are also handled by fips.
+binary `oc_client` requires [CLI11](https://github.com/CLIUtils/CLI11).
 
 Internally, the ethernet interface uses
 [Boost::asio](https://www.boost.org/doc/libs/1_66_0/doc/html/boost_asio.html).
@@ -109,14 +115,17 @@ Other files/classes:
 ----
 # Related Packages
 
-* [sonar_image_proc](https://github.com/apl-ocean-engineering/sonar_image_proc) contains code to postprocess sonar data, including drawing the sonar data to an OpenCV Mat (contains both a ROS node and non-ROS library).
-* [oculus_sonar_driver](https://gitlab.com/apl-ocean-engineering/oculus_sonar_driver) provides a ROS node for interfacing with the Oculus sonar.
-* [acoustic_msgs](https://github.com/apl-ocean-engineering/hydrographic_msgs/tree/main/acoustic_msgs) defines the ROS [SonarImage](https://github.com/apl-ocean-engineering/hydrographic_msgs/blob/main/acoustic_msgs/msg/SonarImage.msg) message type published by [oculus_sonar_driver](https://gitlab.com/apl-ocean-engineering/oculus_sonar_driver).
-* [rqt_sonar_image_view](https://github.com/apl-ocean-engineering/rqt_sonar_image_view) is an Rqt plugin for displaying sonar imagery (uses [sonar_image_proc](https://github.com/apl-ocean-engineering/sonar_image_proc))
+* [oculus_sonar_driver](https://gitlab.com/apl-ocean-engineering/oculus_sonar_driver) provides a ROS node for interfacing with the Oculus sonar.  It includes both ROS1 and ROS2 nodes on separate branches.
+
+* [sonar_image_proc](https://github.com/apl-ocean-engineering/sonar_image_proc) contains code to postprocess sonar data, including drawing the sonar data to an OpenCV Mat (contains both a ROS node and non-ROS library).  **We are in the process of porting this to ROS2**
+
+* [marine_acoustic_msgs](https://github.com/apl-ocean-engineering/marine_msgs/tree/main/marine_acoustic_msgs) defines the ROS [ProjectedSonarImage](https://github.com/apl-ocean-engineering/marine_msgs/blob/main/marine_acoustic_msgs/msg/ProjectedSonarImage.msg) message type published by [oculus_sonar_driver](https://gitlab.com/apl-ocean-engineering/oculus_sonar_driver).
+
+* [rqt_sonar_image_view](https://github.com/apl-ocean-engineering/rqt_sonar_image_view) is an Rqt plugin for displaying sonar imagery (uses [sonar_image_proc](https://github.com/apl-ocean-engineering/sonar_image_proc)).   **This is ROS1-only.  We have no plans to port to ROS2.**
 
 ---
 # License
 
 This code is released under the [BSD 3-clause license](LICENSE).
 
-This repository contains one file provided by Blueprint as part of their free "Oculus Viewer" sample application ([thirdparty/Oculus/Oculus.h](thirdpart/Oculus/Oculus.h)), which describes their protocol and data formats.   This file is distributed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+This repository contains one file provided by Blueprint as part of their free "Oculus Viewer" sample application: ([thirdparty/Oculus/Oculus.h](thirdpart/Oculus/Oculus.h)).  It describes their protocol and data formats.   This file is distributed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).

@@ -33,7 +33,7 @@
 #pragma once
 
 #include <cmath>
-#include <cstddef>  // for size_t
+#include <cstddef> // for size_t
 #include <string>
 #include <vector>
 
@@ -43,21 +43,18 @@ namespace liboculus {
 
 typedef std::vector<uint8_t> ByteVector;
 
-template <typename T>
-T deg2rad(const T &value) {
-  return M_PI / 180.0 * value;
-}
+template <typename T> T deg2rad(const T &value) { return M_PI / 180.0 * value; }
 
 inline const char *DataSizeToString(DataSizeType d) {
   switch (d) {
-    case dataSize8Bit:
-      return "8-bit";
-    case dataSize16Bit:
-      return "16-bit";
-    case dataSize24Bit:
-      return "24-bit";
-    case dataSize32Bit:
-      return "32-bit";
+  case dataSize8Bit:
+    return "8-bit";
+  case dataSize16Bit:
+    return "16-bit";
+  case dataSize24Bit:
+    return "24-bit";
+  case dataSize32Bit:
+    return "32-bit";
   }
 
   return "unknown";
@@ -65,14 +62,14 @@ inline const char *DataSizeToString(DataSizeType d) {
 
 inline size_t SizeOfDataSize(DataSizeType d) {
   switch (d) {
-    case dataSize8Bit:
-      return 1;
-    case dataSize16Bit:
-      return 2;
-    case dataSize24Bit:
-      return 3;
-    case dataSize32Bit:
-      return 4;
+  case dataSize8Bit:
+    return 1;
+  case dataSize16Bit:
+    return 2;
+  case dataSize24Bit:
+    return 3;
+  case dataSize32Bit:
+    return 4;
   }
 
   return 0;
@@ -82,18 +79,18 @@ inline size_t SizeOfDataSize(DataSizeType d) {
 
 inline const char *MessageTypeToString(OculusMessageType t) {
   switch (t) {
-    case messageSimpleFire:
-      return "messageSimpleFire";
-    case messagePingResult:
-      return "messagePingResult";
-    case messageSimplePingResult:
-      return "messageSimplePingResult";
-    case messageUserConfig:
-      return "messageUserConfig";
-    case messageLogs:
-      return "messageLogs";
-    case messageDummy:
-      return "messageDummy";
+  case messageSimpleFire:
+    return "messageSimpleFire";
+  case messagePingResult:
+    return "messagePingResult";
+  case messageSimplePingResult:
+    return "messageSimplePingResult";
+  case messageUserConfig:
+    return "messageUserConfig";
+  case messageLogs:
+    return "messageLogs";
+  case messageDummy:
+    return "messageDummy";
   }
 
   return "(unknown)";
@@ -103,18 +100,18 @@ inline const char *MessageTypeToString(OculusMessageType t) {
 
 inline unsigned int PingRateToHz(PingRateType p) {
   switch (p) {
-    case pingRateNormal:
-      return 10;
-    case pingRateHigh:
-      return 15;
-    case pingRateHighest:
-      return 40;
-    case pingRateLow:
-      return 5;
-    case pingRateLowest:
-      return 2;
-    case pingRateStandby:
-      return 0;
+  case pingRateNormal:
+    return 10;
+  case pingRateHigh:
+    return 15;
+  case pingRateHighest:
+    return 40;
+  case pingRateLow:
+    return 5;
+  case pingRateLowest:
+    return 2;
+  case pingRateStandby:
+    return 0;
   }
 
   return -1;
@@ -134,4 +131,4 @@ inline std::string FreqModeToString(uint8_t mode) {
   return "(unknown)";
 }
 
-}  // namespace liboculus
+} // namespace liboculus

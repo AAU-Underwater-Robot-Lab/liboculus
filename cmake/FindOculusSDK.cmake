@@ -10,14 +10,13 @@
 
 find_package(PkgConfig)
 
-SET(TRIAL_PATHS
- $ENV{OCULUS_DIR}
- ${OCULUS_DIR}
-)
+set(TRIAL_PATHS $ENV{OCULUS_DIR} ${OCULUS_DIR})
 
-find_path(OCULUS_SDK_ROOT Oculus/Oculus.h
-         HINTS ${TRIAL_PATHS}
-         DOC "Location OCULUS SDK"
-        )
+find_path(
+    OCULUS_SDK_ROOT
+    Oculus/Oculus.h
+    HINTS ${TRIAL_PATHS}
+    DOC "Location OCULUS SDK"
+)
 
 find_package_handle_standard_args(OCULUS_SDK DEFAULT_MSG OCULUS_SDK_ROOT)

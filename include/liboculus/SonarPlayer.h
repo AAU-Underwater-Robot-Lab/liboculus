@@ -40,7 +40,7 @@
 namespace liboculus {
 
 class SonarPlayerBase : public OculusMessageHandler {
- public:
+public:
   // typedef tl::expected<SimplePingResult<PingV1>, bool> SonarPlayerResult_t;
 
   SonarPlayerBase() { ; }
@@ -63,7 +63,7 @@ class SonarPlayerBase : public OculusMessageHandler {
   //   static std::shared_ptr<SonarPlayerBase> createGPMFSonarPlayer();
   // #endif
 
- protected:
+protected:
   std::ifstream _input;
 };
 
@@ -71,14 +71,14 @@ class SonarPlayerBase : public OculusMessageHandler {
 ///
 ///
 class RawSonarPlayer : public SonarPlayerBase {
- public:
+public:
   RawSonarPlayer() : SonarPlayerBase() { ; }
 
   virtual ~RawSonarPlayer() { ; }
 
   bool nextPing() override;
 
- private:
+private:
 };
 
-}  // namespace liboculus
+} // namespace liboculus
