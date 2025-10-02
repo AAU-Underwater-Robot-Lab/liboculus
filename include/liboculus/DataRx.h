@@ -30,6 +30,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <memory>
 #include <string>
 #include <thread>
@@ -44,19 +45,56 @@ namespace liboculus {
 
 using std::shared_ptr;
 
+template <typename T>
+class MutexedVariable {
+ public:
+  MutexedVariable(const T &initial_value) : var_(initial_value), mutex_() { ; }
+
+  T get() const {
+    std::lock_guard<std::mutex> guard(mutex_);
+    return var_;
+  }
+
+  T set(const T &value) {
+    std::lock_guard<std::mutex> guard(mutex_);
+    var_ = value;
+    return var_;
+  }
+
+ private:
+  // Mutable to allow locking mutex w/o breaking const correctness
+  mutable std::mutex mutex_;
+  T var_;
+};
+
 class DataRx : public OculusMessageHandler {
 public:
   explicit DataRx(const IoServiceThread::IoContextPtr &iosrv);
   ~DataRx();
 
-  bool isConnected() const { return _socket.is_open(); }
+  // The socket interface can't actually track if a socket is _good_
+  // just that it's _open_.
+  // So we track this state outselves.
+  bool isConnected() const { return is_connected_.get(); }
 
   void connect(const boost::asio::ip::address &addr);
   void connect(const std::string &strAddr);
 
+  void disconnect();
+
   typedef std::function<void()> OnConnectCallback;
   void setOnConnectCallback(OnConnectCallback callback) {
     _onConnectCallback = callback;
+  }
+
+  typedef std::function<void()> OnDisconnectCallback;
+  void setOnDisconnectCallback(OnDisconnectCallback callback) {
+    _onDisconnectCallback = callback;
+  }
+
+  typedef std::function<void()> OnTimeoutCallback;
+  void setOnTimeoutCallback(OnTimeoutCallback callback) {
+    _onTimeoutCallback = callback;
   }
 
   // By default, this function sends the config to the sonar
@@ -74,6 +112,7 @@ public:
 
 private:
   void onConnect(const boost::system::error_code &error);
+  void onTimeout(const boost::system::error_code &error);
 
   // Initiates a network read.
   // Note this function reads until the **total number of bytes
@@ -105,8 +144,15 @@ private:
   shared_ptr<ByteVector> _buffer;
 
   OnConnectCallback _onConnectCallback;
+  OnDisconnectCallback _onDisconnectCallback;
+  OnTimeoutCallback _onTimeoutCallback;
 
-}; // class DataRx
+  int timeout_secs_;
+  boost::asio::deadline_timer timeout_timer_;
+
+  MutexedVariable<bool> is_connected_;
+
+};  // class DataRx
 
 template <typename FireMsg_t>
 void DataRx::sendSimpleFireMessage(const SonarConfiguration &config) {
@@ -122,9 +168,14 @@ void DataRx::sendSimpleFireMessage(const SonarConfiguration &config) {
   data = config.serialize<FireMsg_t>();
 
   if (data.size() > 0) {
-    auto result = _socket.send(boost::asio::buffer(data));
-    LOG(DEBUG) << "Sent " << result << " bytes to sonar";
-    haveWritten(data);
+    try {
+      auto result = _socket.send(boost::asio::buffer(data));
+      LOG(DEBUG) << "Sent " << result << " bytes to sonar";
+      haveWritten(data);
+    } catch (boost::system::system_error &ex) {
+      LOG(WARNING) << "Exception when sending: " << ex.what();
+      disconnect();
+    }
   }
 }
 
