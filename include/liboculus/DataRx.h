@@ -45,9 +45,8 @@ namespace liboculus {
 
 using std::shared_ptr;
 
-template <typename T>
-class MutexedVariable {
- public:
+template <typename T> class MutexedVariable {
+public:
   MutexedVariable(const T &initial_value) : var_(initial_value), mutex_() { ; }
 
   T get() const {
@@ -61,7 +60,7 @@ class MutexedVariable {
     return var_;
   }
 
- private:
+private:
   // Mutable to allow locking mutex w/o breaking const correctness
   mutable std::mutex mutex_;
   T var_;
@@ -152,7 +151,7 @@ private:
 
   MutexedVariable<bool> is_connected_;
 
-};  // class DataRx
+}; // class DataRx
 
 template <typename FireMsg_t>
 void DataRx::sendSimpleFireMessage(const SonarConfiguration &config) {
