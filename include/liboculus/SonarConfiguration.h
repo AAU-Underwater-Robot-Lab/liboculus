@@ -85,13 +85,13 @@ public:
   SonarConfiguration &noGainAssistance() { return setGainAssistance(false); }
 
   SonarConfiguration &set512Beams(bool v);
-  SonarConfiguration &use256Beams()    { return set512Beams(false); }
-  SonarConfiguration &use512Beams()    { return set512Beams(true); }
-  bool get512Beams() const                { return _512beams;}
+  SonarConfiguration &use256Beams() { return set512Beams(false); }
+  SonarConfiguration &use512Beams() { return set512Beams(true); }
+  bool get512Beams() const { return _512beams; }
 
-  bool getSendGain() const                { return _sendGain; }
-  bool getSimpleReturn() const            { return _simpleReturn; }
-  bool getGainAssistance() const          { return _gainAssistance; }
+  bool getSendGain() const { return _sendGain; }
+  bool getSimpleReturn() const { return _simpleReturn; }
+  bool getGainAssistance() const { return _gainAssistance; }
 
   void dump() const;
 

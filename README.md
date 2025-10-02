@@ -27,14 +27,14 @@ but it's straightforward to write packets as a raw binary stream
 ---
 ## Build/Installation
 
-This is a hybrid repository which builds in either ROS1 or ROS2, though there are no ROS dependencies in the code. 
+This is a hybrid repository which builds in either ROS1 or ROS2, though there are no ROS dependencies in the code.
 
 We hope the code is still useful for others looking to talk to the Oculus.
 
 > [!NOTE] [fips](http://floooh.github.io/fips/) support has been removed from this branch.
 
 The primary dependency is on [g3log](https://github.com/KjellKod/g3log).
-* If using either ROS1 or ROS2, use the provided `liboculus.rosinstall` file: 
+* If using either ROS1 or ROS2, use the provided `liboculus.rosinstall` file:
 
 ```
 cd <catkin_ws>/src`; `vcs import --input liboculus/liboculus.repos

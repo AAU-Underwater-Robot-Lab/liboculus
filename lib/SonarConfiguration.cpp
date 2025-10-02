@@ -194,13 +194,14 @@ void SonarConfiguration::updateFlags() const {
     _sfm.extFlags |= 0x00000200;
   }
 
-  const bool more_than_8bit = (_dataSize == dataSize16Bit) || (_dataSize == dataSize32Bit);
-  _sfm.flags = (_rangeInMeters  ? FlagBits::RangeAsMeters : 0 ) |
-         (more_than_8bit  ? FlagBits::Data16Bits : 0) |
-         (_sendGain       ? FlagBits::DoSendGain : 0) |
-         (_simpleReturn   ? FlagBits::SimpleReturn : 0) |
-         (_gainAssistance ? FlagBits::GainAssistance : 0) |
-         (_512beams       ? FlagBits::Do512Beams : 0);
+  const bool more_than_8bit =
+      (_dataSize == dataSize16Bit) || (_dataSize == dataSize32Bit);
+  _sfm.flags = (_rangeInMeters ? FlagBits::RangeAsMeters : 0) |
+               (more_than_8bit ? FlagBits::Data16Bits : 0) |
+               (_sendGain ? FlagBits::DoSendGain : 0) |
+               (_simpleReturn ? FlagBits::SimpleReturn : 0) |
+               (_gainAssistance ? FlagBits::GainAssistance : 0) |
+               (_512beams ? FlagBits::Do512Beams : 0);
 }
 
 void SonarConfiguration::dump() const {
@@ -218,4 +219,4 @@ void SonarConfiguration::dump() const {
             << "\n       use 512 beams   " << get512Beams();
 }
 
-}  // namespace liboculus
+} // namespace liboculus
