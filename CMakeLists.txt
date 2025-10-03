@@ -54,7 +54,7 @@ if(${ros_environment_FOUND})
         )
 
         install(
-            DIRECTORY include/${PROJECT_NAME} thirdparty
+            DIRECTORY include/ thirdparty
             DESTINATION include
             FILES_MATCHING
             PATTERN "*.hpp"
