@@ -41,7 +41,7 @@ if(${ROS_VERSION} EQUAL 2)
             "$<INSTALL_INTERFACE:include/thirdparty>"
     )
 
-    target_link_libraries(oculus PUBLIC Boost::system g3log_ros::g3log_ros)
+    target_link_libraries(oculus PUBLIC Boost::system g3log_ros::g3log)
 
     install(
         TARGETS oculus
