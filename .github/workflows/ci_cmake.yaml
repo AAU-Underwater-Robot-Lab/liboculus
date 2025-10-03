@@ -1,4 +1,4 @@
-name: ROS Industrial CI
+name: CMake build CI
 
 on:
   push:
