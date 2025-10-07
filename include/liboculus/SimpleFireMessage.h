@@ -36,10 +36,10 @@
 #include <string>
 #include <vector>
 
-#include "Oculus/Oculus.h"
 #include "liboculus/Constants.h"
 #include "liboculus/MessageHeader.h"
 #include "liboculus/SonarConfiguration.h"
+#include "liboculus/thirdparty/Oculus/Oculus.h"
 
 namespace liboculus {
 

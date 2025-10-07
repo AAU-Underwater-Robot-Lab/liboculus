@@ -101,7 +101,7 @@ The client must implement callbacks that will handle data from the sonar ([for e
 This library makes liberal use of overlay classes in order to provide
 zero-copy accessor functions into the raw data chunks received from
 the oculus.  These classes overlay the struct hierarchy defined in
-thirdparty/Oculus/Oculus.h, making it possible to directly cast between the types depending on which accessors you want to use:
+`include/liboculus/thirdparty/Oculus/Oculus.h`, making it possible to directly cast between the types depending on which accessors you want to use:
 * OculusSimplePingResult carries all image data from the oculus.
 * Its first field is the OculusSimpleFireMessage that triggered data collection
 * In turn, the first field of the OculusSimpleFireMessage is an OculusMessageHeader
@@ -142,4 +142,4 @@ Other files/classes:
 
 This code is released under the [BSD 3-clause license](LICENSE).
 
-This repository contains one file provided by Blueprint as part of their free "Oculus Viewer" sample application: ([thirdparty/Oculus/Oculus.h](thirdpart/Oculus/Oculus.h)).  It describes their protocol and data formats.   This file is distributed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+This repository contains one file provided by Blueprint as part of their free "Oculus Viewer" sample application: ([include/liboculus/thirdparty/Oculus/Oculus.h](thirdpart/Oculus/Oculus.h)).  It describes their protocol and data formats.   This file is distributed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).

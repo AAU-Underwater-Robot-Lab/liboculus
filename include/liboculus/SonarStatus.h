@@ -36,9 +36,9 @@
 #include <mutex>
 #include <thread>
 
-#include "Oculus/Oculus.h"
 #include "g3log/g3log.hpp"
 #include "liboculus/DataTypes.h"
+#include "liboculus/thirdparty/Oculus/Oculus.h"
 
 namespace liboculus {
 

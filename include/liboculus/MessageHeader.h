@@ -39,7 +39,7 @@
 #include "BearingData.h"
 #include "DataTypes.h"
 #include "ImageData.h"
-#include "Oculus/Oculus.h"
+#include "liboculus/thirdparty/Oculus/Oculus.h"
 
 namespace liboculus {
 

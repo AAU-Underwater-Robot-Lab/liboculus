@@ -37,7 +37,7 @@
 #include <string>
 #include <vector>
 
-#include "Oculus/Oculus.h"
+#include "liboculus/thirdparty/Oculus/Oculus.h"
 
 namespace liboculus {
 

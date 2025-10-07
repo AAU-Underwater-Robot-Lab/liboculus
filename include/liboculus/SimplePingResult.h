@@ -37,13 +37,13 @@
 #include <string>
 #include <vector>
 
-#include "Oculus/Oculus.h"
 #include "liboculus/BearingData.h"
 #include "liboculus/DataTypes.h"
 #include "liboculus/GainData.h"
 #include "liboculus/ImageData.h"
 #include "liboculus/SimpleFireMessage.h"
 #include "liboculus/SonarConfiguration.h"
+#include "liboculus/thirdparty/Oculus/Oculus.h"
 
 namespace liboculus {
 

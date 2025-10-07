@@ -32,8 +32,8 @@
 
 #include <g3log/g3log.hpp> // needed for CHECK macro
 
-#include "Oculus/Oculus.h"
 #include "liboculus/DataTypes.h"
+#include "liboculus/thirdparty/Oculus/Oculus.h"
 
 namespace liboculus {
 

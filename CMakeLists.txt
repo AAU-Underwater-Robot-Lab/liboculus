@@ -40,9 +40,7 @@ if(${ros_environment_FOUND})
             oculus
             PUBLIC
                 "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-                "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/thirdparty>"
-                "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"
-                "$<INSTALL_INTERFACE:include/thirdparty>"
+                "$<INSTALL_INTERFACE:include/>"
         )
 
         install(
@@ -54,7 +52,7 @@ if(${ros_environment_FOUND})
         )
 
         install(
-            DIRECTORY include/ thirdparty
+            DIRECTORY include/
             DESTINATION include
             FILES_MATCHING
             PATTERN "*.hpp"
@@ -73,13 +71,13 @@ if(${ros_environment_FOUND})
 
         catkin_package(
             CATKIN_DEPENDS g3log_ros
-            INCLUDE_DIRS include thirdparty
+            INCLUDE_DIRS include
             LIBRARIES liboculus
         )
 
         add_library(liboculus ${oculus_SRCS})
 
-        include_directories(liboculus include thirdparty ${catkin_INCLUDE_DIRS})
+        include_directories(liboculus include ${catkin_INCLUDE_DIRS})
 
         target_link_libraries(liboculus ${catkin_LIBRARIES})
 
@@ -92,7 +90,7 @@ if(${ros_environment_FOUND})
 
         ## Install headers
         install(
-            DIRECTORY include/${PROJECT_NAME}/ thirdparty/
+            DIRECTORY include/${PROJECT_NAME}/
             DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
             FILES_MATCHING
             PATTERN "*.hpp"
