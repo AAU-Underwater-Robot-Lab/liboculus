@@ -35,9 +35,9 @@
 #include <memory>
 #include <mutex>
 
-#include "Oculus/Oculus.h"
 #include "liboculus/IoServiceThread.h"
 #include "liboculus/SonarStatus.h"
+#include "liboculus/thirdparty/Oculus/Oculus.h"
 
 namespace liboculus {
 

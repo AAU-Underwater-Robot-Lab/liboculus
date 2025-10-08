@@ -33,8 +33,8 @@
 #include <boost/asio.hpp>
 #include <vector>
 
-#include "Oculus/Oculus.h"
 #include "liboculus/Constants.h"
+#include "liboculus/thirdparty/Oculus/Oculus.h"
 
 namespace liboculus {
 

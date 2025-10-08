@@ -37,7 +37,7 @@
 #include <iostream>
 
 #include "DataTypes.h"
-#include "Oculus/Oculus.h"
+#include "liboculus/thirdparty/Oculus/Oculus.h"
 
 namespace liboculus {
 

@@ -33,12 +33,12 @@
 #include <fstream>
 #include <iostream>
 
-#include "Oculus/Oculus.h"
 #include "g3log/g3log.hpp"
 #include "liboculus/Constants.h"
 #include "liboculus/DataTypes.h"
 #include "liboculus/MessageHeader.h"
 #include "liboculus/SimplePingResult.h"
+#include "liboculus/thirdparty/Oculus/Oculus.h"
 
 namespace liboculus {
 
